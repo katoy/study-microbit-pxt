@@ -1,0 +1,4 @@
+
+- https://note.com/hottarita/n/n6f3781bfff22
+  Claude Codeを活用してMicro:bit開発環境を整えてみた
+

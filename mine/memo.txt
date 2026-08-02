@@ -1,0 +1,7 @@
+
+- https://github.com/tmdoi/microbit-pxt
+  micro:bit × pxt CLI × Claude Code 開発記録
+
+- https://note.com/hottarita/n/n6f3781bfff22
+  Claude Codeを活用してMicro:bit開発環境を整えてみた
+
