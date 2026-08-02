@@ -1,8 +1,22 @@
 {
   "name": "hello-microbit",
   "version": "1.0.0",
+  "scripts": {
+    "build": "pxt build",
+    "test:pxt": "pxt test",
+    "test:e2e": "playwright test",
+    "test:cov": "jest",
+    "test": "npm run test:pxt && npm run build && npm run test:e2e && npm run test:cov"
+  },
   "dependencies": {
     "playwright": "^1.45.0",
     "pxt-microbit": "^9.1.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.1.2",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.12"
   }
 }

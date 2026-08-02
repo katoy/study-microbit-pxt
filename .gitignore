@@ -16,6 +16,20 @@ pxt_modules/
 .pxt/
 built/
 !built/binary.hex
+yotta_modules/
+yotta_targets/
+
+# Development tools & local configurations
+.vscode/
+.env
+.env.local
+.env.*.local
+*.log
 
 # Playwright / Testing
 .playwright-mcp/
+test-results/
+playwright-report/
+blob-report/
+coverage/
+.nyc_output/

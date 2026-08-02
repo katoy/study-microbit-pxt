@@ -11,7 +11,9 @@
         "main.blocks",
         "main.ts"
     ],
-    "testFiles": [],
+    "testFiles": [
+        "tests/test.ts"
+    ],
     "public": true,
     "targetVersions": {
         "target": "8.0.18",
