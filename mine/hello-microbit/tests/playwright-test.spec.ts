@@ -40,7 +40,117 @@ async function expectLedPattern(simFrame: FrameLocator, expectedIndices: number[
   }).toEqual(expected);
 }
 
+// 親ページにマウスカーソル要素を確実に配置するヘルパー
+async function ensureMousePointer(page: any) {
+  await page.evaluate(() => {
+    let box = document.querySelector('playwright-mouse-pointer') as HTMLElement;
+    if (!box) {
+      box = document.createElement('playwright-mouse-pointer');
+      const styleElement = document.createElement('style');
+      styleElement.innerHTML = `
+        playwright-mouse-pointer {
+          pointer-events: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 24px;
+          height: 24px;
+          background: rgba(0, 150, 255, 0.4);
+          border: 2px solid rgba(0, 150, 255, 0.8);
+          border-radius: 12px;
+          margin: -12px 0 0 -12px;
+          padding: 0;
+          transition: background 0.1s, border-color 0.1s, transform 0.1s, left 0.8s ease-in-out, top 0.8s ease-in-out;
+          z-index: 2147483647;
+          display: none;
+        }
+        playwright-mouse-pointer.mousedown {
+          background: rgba(255, 0, 0, 0.7);
+          border-color: rgba(255, 0, 0, 1);
+          transform: scale(0.8);
+        }
+      `;
+      document.head.appendChild(styleElement);
+      document.body.appendChild(box);
+    }
+  });
+}
+
+// マウスカーソル要素を指定の位置（ビューポート基準）に移動する
+async function moveMousePointer(page: any, x: number, y: number) {
+  await page.evaluate(([x, y]) => {
+    const box = document.querySelector('playwright-mouse-pointer') as HTMLElement;
+    if (box) {
+      box.style.display = 'block';
+      box.style.left = x + 'px';
+      box.style.top = y + 'px';
+    }
+  }, [x, y]);
+}
+
+// マウスカーソル要素のクリック状態（赤色表示）を変更する
+async function setMousePointerClickState(page: any, isDown: boolean) {
+  await page.evaluate((isDown) => {
+    const box = document.querySelector('playwright-mouse-pointer');
+    if (box) {
+      if (isDown) {
+        box.classList.add('mousedown');
+      } else {
+        box.classList.remove('mousedown');
+      }
+    }
+  }, isDown);
+}
+
+// メインページ、および iframe 内の要素に対する視覚的クリックヘルパー
+async function clickWithVisualHelper(page: any, locator: any) {
+  await ensureMousePointer(page);
+  await expect(locator).toBeVisible();
+
+  // 要素をスクロールして表示し、Playwrightでホバーする
+  await locator.hover();
+  await page.waitForTimeout(100);
+
+  // 要素の絶対座標（親ページ基準）を取得する
+  const box = await locator.boundingBox();
+  if (box) {
+    const pageX = box.x + box.width / 2;
+    const pageY = box.y + box.height / 2;
+
+    // 現在のスクロール量を取得してビューポート座標を計算する
+    const scroll = await page.evaluate(() => ({
+      x: window.scrollX,
+      y: window.scrollY
+    }));
+
+    const clientX = pageX - scroll.x;
+    const clientY = pageY - scroll.y;
+
+    // 1. カーソルを要素の位置へスライドさせる
+    await moveMousePointer(page, clientX, clientY);
+    await page.waitForTimeout(900); // 移動の軌跡を動画に残すためのディレイ (0.8sのtransitionに合わせる)
+
+    // 2. マウスクリック開始（赤丸へ変化）
+    await setMousePointerClickState(page, true);
+    await page.waitForTimeout(150); // クリックの瞬間を見せる
+
+    // 3. 実際のクリックを実行
+    await locator.click();
+
+    // 4. マウスクリック終了（青丸へ復帰）
+    await page.waitForTimeout(150);
+    await setMousePointerClickState(page, false);
+    await page.waitForTimeout(200); // 余韻
+  } else {
+    // 座標が取得できなかった場合は通常のクリックを実行
+    await locator.click();
+  }
+}
+
 test('MakeCode micro:bit simulator test', async ({ page }) => {
+  // マウスヘルパーを登録
+  await ensureMousePointer(page);
+
   // テスト全体のタイムアウトを伸ばす
   test.setTimeout(90000);
 
@@ -52,14 +162,12 @@ test('MakeCode micro:bit simulator test', async ({ page }) => {
   // 2. 「読み込む」(Import) ボタンをクリック
   console.log('Opening import dialog...');
   const importButton = page.getByRole('button', { name: /Import|読み込む/i }).last();
-  await expect(importButton).toBeVisible({ timeout: 15000 });
-  await importButton.click();
+  await clickWithVisualHelper(page, importButton);
 
   // 3. 「Import File...」(ファイルを読み込む) カードをクリック
   console.log('Clicking "Import File..." card...');
   const importFileCard = page.getByText(/Import File|ファイルを読み込む/i).first();
-  await expect(importFileCard).toBeVisible({ timeout: 10000 });
-  await importFileCard.click();
+  await clickWithVisualHelper(page, importFileCard);
 
   // 4. hex ファイルをアップロード
   const fileInput = page.locator('input[type="file"]');
@@ -75,8 +183,7 @@ test('MakeCode micro:bit simulator test', async ({ page }) => {
 
   // 5. 「つづける」をクリック
   const continueButton = page.getByRole('button', { name: /Go ahead|Continue|つづける/i });
-  await expect(continueButton).toBeVisible();
-  await continueButton.click();
+  await clickWithVisualHelper(page, continueButton);
 
   // 6. エディタ画面のロード完了を待つ (URLに #editor が含まれる)
   console.log('Waiting for editor to load...');
@@ -99,23 +206,17 @@ test('MakeCode micro:bit simulator test', async ({ page }) => {
 
   // シナリオ 2: Aボタン押下時の表示 (笑顔)
   console.log('Scenario 2: Pressing Button A for happy icon...');
-  const buttonA = simFrame.locator('g[aria-label="A"]').first();
-  await expect(buttonA).toBeVisible({ timeout: 5000 });
-  await buttonA.click();
+  await clickWithVisualHelper(page, simFrame.locator('g[aria-label="A"]').first());
   await expectLedPattern(simFrame, HAPPY_LEDS);
 
   // シナリオ 3: Bボタン押下時の表示 (悲しい顔)
   console.log('Scenario 3: Pressing Button B for sad icon...');
-  const buttonB = simFrame.locator('g[aria-label="B"]').first();
-  await expect(buttonB).toBeVisible({ timeout: 5000 });
-  await buttonB.click();
+  await clickWithVisualHelper(page, simFrame.locator('g[aria-label="B"]').first());
   await expectLedPattern(simFrame, SAD_LEDS);
 
   // シナリオ 4: A+Bボタン押下時の表示 ("Hello!" スクロール -> ハートに戻る)
   console.log('Scenario 4: Pressing Button A+B for Hello! text...');
-  const buttonAB = simFrame.locator('g[aria-label="A+B"]').first();
-  await expect(buttonAB).toBeVisible({ timeout: 5000 });
-  await buttonAB.click();
+  await clickWithVisualHelper(page, simFrame.locator('g[aria-label="A+B"]').first());
   
   // 文字列スクロールが終わると、main.ts の実装によりハートアイコンに戻る
   // スクロールにかかる時間を考慮し、タイムアウトを長めに設定 (15秒)
@@ -124,9 +225,7 @@ test('MakeCode micro:bit simulator test', async ({ page }) => {
 
   // シナリオ 5: Shake時の表示 (1〜6の数字表示 -> 1秒後に消去)
   console.log('Scenario 5: Simulating Shake gesture...');
-  const shakeButton = simFrame.locator('.sim-shake, [aria-label="Shake"]').first();
-  await expect(shakeButton).toBeVisible({ timeout: 5000 });
-  await shakeButton.click();
+  await clickWithVisualHelper(page, simFrame.locator('.sim-shake, [aria-label="Shake"]').first());
   
   // シェイクされるとランダムな数字が表示される。
   // そのため、何かしらのLEDが点灯しているはず (全消灯ではない状態)
