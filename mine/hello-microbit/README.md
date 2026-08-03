@@ -41,6 +41,24 @@ npx pxt serve
 
 ブラウザ上でブロックやコードを編集すると、ローカルファイルの [main.blocks](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) および [main.ts](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) が自動的にリアルタイムで同期・更新されます。
 
+### プログラム更新後の main.blocks の更新（同期）
+
+テキストエディタで [main.ts](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) などのプログラムファイルを直接編集・更新した場合、ローカルの [main.blocks](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) ファイルは自動的には更新されません。[main.blocks](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) を最新状態と同期させるには、以下のいずれかの方法を行います。
+
+#### 方法1: ローカル開発サーバー（`npx pxt serve`）を使用する
+1. `npx pxt serve` を実行してローカル開発サーバーを起動し、ブラウザでブロックエディタを開きます。
+2. 開発サーバーが起動している状態で、テキストエディタで [main.ts](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) を編集して保存します。
+3. ブラウザ上のエディタが自動的にリロードされ、変更された [main.ts](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) に基づいてブロックが再生成されます。これと同時に、ローカルの [main.blocks](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) も自動的に更新されます。
+
+#### 方法2: ビルドした `.hex` ファイルを再インポートする
+1. `npx pxt build` を実行して `built/binary.hex` をビルドします。
+2. 生成された `.hex` ファイルを MakeCode エディタ（デスクトップアプリまたはブラウザ版）に再度インポートします。
+3. エディタがプロジェクトを読み込み、ブロック画面を表示したタイミングで [main.blocks](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) が自動的に再生成されます。
+
+> [!IMPORTANT]
+> **ブロックへの逆変換（デコンパイル）における注意点**
+> [main.ts](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) でブロックエディタがサポートしていない複雑な TypeScript 構文（高度なクラス定義、ジェネリクス、一部のJavaScript組み込み関数など）を記述した場合、ブロックに逆変換する際に「グレーのJavaScriptブロック」として表示されるか、エラーが発生してブロックエディタで開けなくなることがあります。ブロックエディタと同期させたい場合は、MakeCodeが対応している標準的なAPIやシンプルな構文を使用してください。
+
 ---
 
 ## ビルド
