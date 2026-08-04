@@ -1,5 +1,7 @@
-from microbit import *
 import random
+
+from microbit import *
+
 
 def main():
     # 起動時: ハートを表示

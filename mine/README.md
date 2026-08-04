@@ -17,7 +17,9 @@
 - [クリーンアップスクリプト (clean.sh)](#クリーンアップスクリプト-cleansh)
   - [対象ディレクトリ](#対象ディレクトリ)
   - [使用方法](#使用方法)
-- [AIエージェントの活用 (microbit-build-and-open)](#aiエージェントの活用-microbit-build-and-open)
+- [AIエージェントの活用 (microbit AI Skills)](#aiエージェントの活用-microbit-ai-skills)
+  - [提供スキル一覧](#提供スキル一覧)
+  - [スキルのセットアップ](#スキルのセットアップ)
   - [エージェントへの指示プロンプト例](#エージェントへの指示プロンプト例)
   - [エージェントの内部動作プロセス](#エージェントの内部動作プロセス)
 - [ライセンス](#ライセンス)
@@ -30,7 +32,7 @@
 
 ```text
 mine/
-├── hello-microbit/            <-- MakeCode プロジェクトディレクトリ
+├── hello-microbit/            <-- MakeCode プロジェクトディレクトリ (TypeScript)
 │   ├── main.ts                <-- メインプログラムコード (TypeScript)
 │   ├── main.blocks            <-- ブロックエディタ用の同期ファイル
 │   ├── built/                 <-- ビルド後に生成される成果物ディレクトリ (binary.hex など)
@@ -43,6 +45,30 @@ mine/
 │   ├── tsconfig.json          <-- TypeScriptの設定ファイル
 │   ├── playwright.config.ts   <-- Playwrightの設定ファイル
 │   └── README.md              <-- プロジェクト個別の詳細ドキュメント
+├── hello-microbit-python/     <-- Python (MicroPython) プロジェクトディレクトリ
+│   ├── main.py                <-- メインプログラムコード (Python)
+│   ├── tests/                 <-- テストコードが格納されているディレクトリ
+│   │   ├── conftest.py        <-- micro:bit モック定義ファイル
+│   │   └── test_main.py       <-- Pytest用のユニットテスト
+│   ├── test.sh                <-- 静的解析とテストを一括実行するスクリプト
+│   ├── requirements.txt       <-- 依存ライブラリの定義ファイル
+│   └── README.md              <-- プロジェクト個別の詳細ドキュメント
+├── snake/                     <-- スネークゲームサンプル (Python / MakeCode Python)
+│   ├── main.py                <-- メインプログラムコード (Python)
+│   ├── main_makecode.py       <-- MakeCode 用調整済み Python コード
+│   └── README.md              <-- サンプルの説明ドキュメント
+├── invader/                   <-- Shake & Shoot インベーダーゲームサンプル
+│   ├── main.py                <-- メインプログラムコード (MicroPython)
+│   ├── main_makecode.py       <-- MakeCode 用調整済み Python コード
+│   └── README.md              <-- サンプルの説明ドキュメント
+├── skills/                    <-- AI Agent 用カスタムスキル定義
+│   ├── microbit-block-reviewer/  <-- MakeCode ブロック互換性・非対応構文の自動レビュー
+│   ├── microbit-build-and-open/ <-- MakeCode ビルド & エディタ起動・インポート自動化
+│   ├── microbit-import-python/  <-- Python コードの MakeCode インポート・変換自動化
+│   ├── microbit-sim-tester/     <-- シミュレータ自動動作検証（ボタン/センサー操作 & 5x5 LED 撮影）
+│   ├── setup.sh               <-- スキルを Agent 共有フォルダにセットアップするスクリプト
+│   ├── cleanup.sh             <-- スキルのセットアップを取り消すスクリプト
+│   └── README.md              <-- スキル管理の案内ドキュメント
 ├── clean.sh                   <-- プロジェクト全体を初期化するためのクリーンアップスクリプト
 ├── memo.txt                   <-- 開発メモ・参考リンク集
 └── README.md                  <-- リポジトリ全体の案内ドキュメント（本ファイル）
@@ -135,9 +161,13 @@ npx pxt build
 
 ## テストの実行
 
-このプロジェクトには、3種類のテスト環境（PXT標準テスト、Playwright E2Eシミュレータテスト、Jestコードカバレッジテスト）が統合されています。
+各プロジェクトにはテスト環境が統合されており、ローカルで実行可能です。
 
-### 1. 全てのテストを一括実行（推奨）
+### A. TypeScript版 (hello-microbit)
+
+TypeScript版には、3種類のテスト環境（PXT標準テスト、Playwright E2Eシミュレータテスト、Jestコードカバレッジテスト）が統合されています。
+
+#### 1. 全てのテストを一括実行（推奨）
 
 以下のいずれかのコマンドを実行すると、「PXT標準テスト ➔ ビルド ➔ E2Eテスト ➔ カバレッジ計測」が順番に自動実行されます。
 
@@ -151,35 +181,62 @@ npm test
 ./test.sh
 ```
 
-### 2. 個別テストの実行
+#### 2. 個別テストの実行
 
-#### PXT 標準ユニットテスト
-`tests/test.ts` に記述された PXT の挙動・ロジックテストを実行します。
+- **PXT 標準ユニットテスト**
+  `tests/test.ts` に記述された PXT の挙動・ロジックテストを実行します。
+  ```bash
+  cd hello-microbit
+  npm run test:pxt
+  # または
+  npx pxt test
+  ```
+
+- **Playwright E2E シミュレータテスト**
+  Playwright を使用してブラウザ上の MakeCode シミュレータにビルドした hex ファイルをロードし、実際にボタンクリックやシェイクなどのイベントを発生させて LED の点灯パターンの振る舞いを検証するテストです。
+  ```bash
+  cd hello-microbit
+  npm run test:e2e
+  # または
+  npx playwright test
+  ```
+
+- **Jest コードカバレッジ計測テスト**
+  micro:bit の各 API をモックし、`main.ts` に対する C0/C1 カバレッジを Jest で測定します。
+  ```bash
+  cd hello-microbit
+  npm run test:cov
+  # または
+  npx jest
+  ```
+  実行後、ターミナル上にカバレッジ結果が出力されるほか、`coverage/index.html` に詳細な **HTML カバレッジレポート** が出力されます。
+
+### B. Python版 (hello-microbit-python)
+
+Python版には、Ruffによる静的解析（Linter）と Pytestによるユニットテスト（micro:bit APIのモック）が統合されています。
+
+#### 1. 全てのテストを一括実行（推奨）
+
+以下のスクリプトを実行すると、自動的に仮想環境 `.venv` が構築され、必要な依存パッケージを同期したのち、静的解析およびユニットテストを実行します。
+
 ```bash
-cd hello-microbit
-npm run test:pxt
-# または
-npx pxt test
+cd hello-microbit-python
+./test.sh
 ```
 
-#### Playwright E2E シミュレータテスト
-Playwright を使用してブラウザ上の MakeCode シミュレータにビルドした hex ファイルをロードし、実際にボタンクリックやシェイクなどのイベントを発生させて LED の点灯パターンの振る舞いを検証するテストです。
-```bash
-cd hello-microbit
-npm run test:e2e
-# または
-npx playwright test
-```
+#### 2. 個別テストの実行
 
-#### Jest コードカバレッジ計測テスト
-micro:bit の各 API をモックし、`main.ts` に対する C0/C1 カバレッジを Jest で測定します。
-```bash
-cd hello-microbit
-npm run test:cov
-# または
-npx jest
-```
-実行後、ターミナル上にカバレッジ結果が出力されるほか、`coverage/index.html` に詳細な **HTML カバレッジレポート** が出力されます。
+- **静的解析 (Linter) の実行**
+  ```bash
+  cd hello-microbit-python
+  .venv/bin/ruff check main.py tests/
+  ```
+
+- **ユニットテスト (Pytest) の実行**
+  ```bash
+  cd hello-microbit-python
+  .venv/bin/pytest
+  ```
 
 ---
 
@@ -194,6 +251,9 @@ npx jest
 * `pxt_modules/` (PXT 関連パッケージ)
 * `.pxt/` (PXT キャッシュ)
 * `yotta_modules/` / `yotta_targets/` (C++ビルド用の yotta 関連ディレクトリ)
+* `.venv/` (Python 仮想環境)
+* `__pycache__/` / `.pytest_cache/` / `.ruff_cache/` (Python / Pytest / Ruff キャッシュ)
+* `coverage/` / `test-results/` / `.playwright-mcp/` (テスト結果・カバレッジ・Playwright キャッシュ)
 
 ### 使用方法
 `mine` のルートディレクトリで実行します。
@@ -212,21 +272,45 @@ npx jest
 
 ---
 
-## AIエージェントの活用 (microbit-build-and-open)
+## AIエージェントの活用 (microbit AI Skills)
 
-`microbit-build-and-open` スキルを搭載した AI エージェント（Antigravity や Claude Code など）は、この手順全体を自律的に実行して動作確認を行うことができます。
+`skills/` ディレクトリには、AI エージェント（Antigravity, Claude Code, Codex など）の動作を拡張するカスタムスキル群が用意されています。
+
+### 提供スキル一覧
+
+- [`microbit-block-reviewer`](file:///Users/katoy/github/study-microbit-pxt/mine/skills/microbit-block-reviewer/SKILL.md): Python / TypeScript コードの MakeCode ブロックエディタ互換性レビューおよび構文検証。
+- [`microbit-build-and-open`](file:///Users/katoy/github/study-microbit-pxt/mine/skills/microbit-build-and-open/SKILL.md): ローカルビルドおよび `.hex` ファイルの MakeCode デスクトップアプリ/ブラウザへの自動ロード。
+- [`microbit-import-python`](file:///Users/katoy/github/study-microbit-pxt/mine/skills/microbit-import-python/SKILL.md): Python コードの MakeCode エディタへの自動インポートおよびブロック変換の自動操作。
+- [`microbit-sim-tester`](file:///Users/katoy/github/study-microbit-pxt/mine/skills/microbit-sim-tester/SKILL.md): Playwright を活用した MakeCode シミュレータ上でのボタン(A/B/A+B)操作・センサーイベント発火および 5x5 LED 表示スクショ自動検証。
+
+### スキルのセットアップ
+
+各種 AI エージェントのグローバル設定ディレクトリにシンボリックリンクを作成して利用可能にします。
+
+```bash
+cd skills
+./setup.sh
+```
+
+設定を取り消す（アンセットアップする）場合：
+```bash
+cd skills
+./cleanup.sh
+```
 
 ### エージェントへの指示プロンプト例
 
-AIエージェントに自動動作確認を依頼する際は、以下のように指示を送信します。
+AIエージェントに自動動作確認やレビューを依頼する際は、以下のように指示を送信します。
 
 * **例1: ローカルのデスクトップアプリで起動確認**
   > 「`mine/hello-microbit` のコードを変更したので、ローカルでビルドして MakeCode デスクトップアプリで開いて動作確認をしてください。」
 * **例2: ブラウザ版に自動アップロード＆スクリーンショット確認**
   > 「`hello-microbit` をビルドし、Playwright でブラウザ版の MakeCode エディタ（https://makecode.microbit.org/）を開いて、生成された hex ファイルをインポートしてください。インポートが成功したらスクリーンショットを撮って見せてください。」
-* **例3: テストの一括実行とカバレッジ結果の確認**
-  > 「`hello-microbit` プロジェクトをビルドし、`npm test`（または `test.sh`）を実行してテストがすべてパスすることを確認してください。また、カバレッジ結果を報告してください。」
-* **例4: ビルドの検証のみ**
+* **例3: Python コードのブロック化互換性レビュー**
+  > 「`snake/main.py` が MakeCode のブロックエディタで正常にブロック化可能か `microbit-block-reviewer` スキルで検証・レビューしてください。」
+* **例4: シミュレータ上での自動インタラクション＆動作検証**
+  > 「MakeCode Web エディタ上のシミュレータで A ボタンと B ボタンを押下し、さらに Shake イベントを発生させて、それぞれの 5x5 LED マトリクス表示結果を `microbit-sim-tester` スキルで撮影・検証してください。」
+* **例5: ビルドの検証のみ**
   > 「`hello-microbit` プロジェクトを一度クリーンアップしてから再ビルドし、`built/binary.hex` が正しく生成されるかチェックしてください。」
 
 ### エージェントの内部動作プロセス

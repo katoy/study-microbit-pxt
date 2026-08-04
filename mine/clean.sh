@@ -4,7 +4,21 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # 削除対象のディレクトリ名リスト
-TARGET_NAMES=("node_modules" "built" "pxt_modules" ".pxt" "yotta_modules" "yotta_targets")
+TARGET_NAMES=(
+    "node_modules"
+    "built"
+    "pxt_modules"
+    ".pxt"
+    "yotta_modules"
+    "yotta_targets"
+    ".venv"
+    "__pycache__"
+    ".pytest_cache"
+    ".ruff_cache"
+    "coverage"
+    "test-results"
+    ".playwright-mcp"
+)
 
 echo "=== Cleanup Script ==="
 echo "Searching in: $SCRIPT_DIR"
