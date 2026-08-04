@@ -1,0 +1,14 @@
+{
+  "name": "invader",
+  "version": "1.0.0",
+  "description": "Shake & Shoot Invader for micro:bit",
+  "main": "main.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "test:coverage": "node --test --experimental-test-coverage tests/*.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
