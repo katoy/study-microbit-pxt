@@ -4,16 +4,19 @@ import * as path from 'path';
 
 async function captureDemoFrames() {
     const browser = await chromium.launch({ headless: true });
-    const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
-    
+    const page = await browser.newPage({ viewport: { width: 1280, height: 750 } });
+
+    console.log('Navigating to MakeCode editor for Compass Device Orientation Demo GIF...');
     await page.goto('https://makecode.microbit.org/#editor');
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(5000);
 
     // Inject 8-direction logic and switch to blocks view
     await page.evaluate(async () => {
-        const jsBtn = document.querySelector('#command-javascript') || document.querySelector('.javascript-menuitem') || Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('JavaScript'));
+        const jsBtn = document.querySelector('#command-javascript') ||
+                      document.querySelector('.javascript-menuitem') ||
+                      Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('JavaScript'));
         if (jsBtn) (jsBtn as HTMLElement).click();
-        await new Promise(r => setTimeout(r, 600));
+        await new Promise(r => setTimeout(r, 800));
 
         if ((window as any).monaco && (window as any).monaco.editor) {
             const models = (window as any).monaco.editor.getModels();
@@ -42,21 +45,28 @@ async function captureDemoFrames() {
             }
         }
 
-        const blockBtn = document.querySelector('#command-blocks') || document.querySelector('.blocks-menuitem') || Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('ブロック'));
+        const blockBtn = document.querySelector('#command-blocks') ||
+                         document.querySelector('.blocks-menuitem') ||
+                         Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('ブロック'));
         if (blockBtn) (blockBtn as HTMLElement).click();
 
-        // Dismiss tour modal if exists
         const modals = document.querySelectorAll('.ui.dimmer, .ui.modal');
         modals.forEach(m => m.remove());
     });
 
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(4000);
 
-    const angles = [0, 45, 90, 135, 180, 225, 270, 315];
-    const framesDir = path.join(process.cwd(), 'screenshots', 'frames');
+    const angles: number[] = [];
+    for (let deg = 0; deg < 360; deg += 15) {
+        angles.push(deg);
+    }
+
+    const framesDir = path.join(__dirname, '..', 'screenshots', 'frames');
     if (!fs.existsSync(framesDir)) {
         fs.mkdirSync(framesDir, { recursive: true });
     }
+
+    console.log(`Capturing ${angles.length} frames showing micro:bit orientation changes for compass...`);
 
     for (let i = 0; i < angles.length; i++) {
         const angle = angles[i];
@@ -70,21 +80,29 @@ async function captureDemoFrames() {
                         state: { compassHeading: a }
                     }, '*');
                 } catch (e) {}
+
+                try {
+                    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                    if (doc) {
+                        const board = doc.querySelector('svg#board') || doc.querySelector('.sim-board') || doc.querySelector('svg');
+                        if (board) {
+                            (board as HTMLElement).style.transform = `rotate(${-a}deg)`;
+                            (board as HTMLElement).style.transformOrigin = 'center 40%';
+                            (board as HTMLElement).style.transition = 'transform 0.1s linear';
+                        }
+                    }
+                } catch (e) {}
             });
         }, angle);
 
-        await page.waitForTimeout(800);
+        await page.waitForTimeout(300);
+
         const fileName = `frame_${String(i).padStart(2, '0')}.png`;
-        const simElement = page.locator('#simframe, .simframe, iframe[src*="sim"]').first();
-        if (await simElement.isVisible()) {
-            await simElement.screenshot({ path: path.join(framesDir, fileName) });
-        } else {
-            await page.screenshot({ path: path.join(framesDir, fileName) });
-        }
+        await page.screenshot({ path: path.join(framesDir, fileName) });
     }
 
     await browser.close();
-    console.log('Successfully captured 8 frames for demo GIF.');
+    console.log('Successfully captured micro:bit orientation demo frames.');
 }
 
 captureDemoFrames().catch(console.error);

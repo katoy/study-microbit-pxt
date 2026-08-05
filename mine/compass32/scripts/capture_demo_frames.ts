@@ -4,15 +4,16 @@ import * as path from 'path';
 
 async function captureCompass32DemoFrames() {
     const browser = await chromium.launch({ headless: true });
-    const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+    const page = await browser.newPage({ viewport: { width: 1280, height: 750 } });
 
-    console.log('Navigating to MakeCode editor for Compass32 Demo GIF...');
+    console.log('Navigating to MakeCode editor for Compass32 Device Orientation Demo GIF...');
     await page.goto('https://makecode.microbit.org/#editor');
-    await page.waitForTimeout(4000);
+    await page.waitForTimeout(5000);
 
     const mainTsPath = path.join(__dirname, '..', 'main.ts');
     const codeText = fs.readFileSync(mainTsPath, 'utf-8');
 
+    // Switch to JavaScript editor, inject code and convert to blocks
     await page.evaluate(async (code) => {
         const jsBtn = document.querySelector('#command-javascript') ||
                       document.querySelector('.javascript-menuitem') ||
@@ -36,19 +37,20 @@ async function captureCompass32DemoFrames() {
         modals.forEach(m => m.remove());
     }, codeText);
 
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(4000);
 
-    const angles = [
-        0, 14, 27, 37, 45, 53, 63, 76,
-        90, 104, 117, 127, 135, 143, 153, 166,
-        180, 194, 207, 217, 225, 233, 243, 256,
-        270, 284, 297, 307, 315, 323, 333, 346
-    ];
+    // 36 steps (every 10 degrees) for smooth rotation of the micro:bit device
+    const angles: number[] = [];
+    for (let deg = 0; deg < 360; deg += 10) {
+        angles.push(deg);
+    }
 
     const framesDir = path.join(__dirname, '..', 'screenshots', 'frames');
     if (!fs.existsSync(framesDir)) {
         fs.mkdirSync(framesDir, { recursive: true });
     }
+
+    console.log(`Capturing ${angles.length} frames showing micro:bit device orientation changes...`);
 
     for (let i = 0; i < angles.length; i++) {
         const angle = angles[i];
@@ -62,22 +64,29 @@ async function captureCompass32DemoFrames() {
                         state: { compassHeading: a }
                     }, '*');
                 } catch (e) {}
+
+                try {
+                    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                    if (doc) {
+                        const board = doc.querySelector('svg#board') || doc.querySelector('.sim-board') || doc.querySelector('svg');
+                        if (board) {
+                            (board as HTMLElement).style.transform = `rotate(${-a}deg)`;
+                            (board as HTMLElement).style.transformOrigin = 'center 40%';
+                            (board as HTMLElement).style.transition = 'transform 0.1s linear';
+                        }
+                    }
+                } catch (e) {}
             });
         }, angle);
 
-        await page.waitForTimeout(400);
+        await page.waitForTimeout(300);
 
         const fileName = `frame_${String(i).padStart(2, '0')}.png`;
-        const simElement = page.locator('#simframe, .simframe, iframe[src*="sim"]').first();
-        if (await simElement.isVisible()) {
-            await simElement.screenshot({ path: path.join(framesDir, fileName) });
-        } else {
-            await page.screenshot({ path: path.join(framesDir, fileName) });
-        }
+        await page.screenshot({ path: path.join(framesDir, fileName) });
     }
 
     await browser.close();
-    console.log('Captured 32 frames for compass32 demo GIF.');
+    console.log('Successfully captured micro:bit orientation demo frames.');
 }
 
 captureCompass32DemoFrames().catch(console.error);
