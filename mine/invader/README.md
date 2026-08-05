@@ -29,8 +29,8 @@ micro:bit の 5x5 LED マトリクス、A/Bボタン、および Shake（振る�
 
 ```text
 invader/
-├── main.py          <-- 標準 MicroPython 用コード (Thonny や Mu Editor 等)
-├── main_makecode.py <-- MakeCode Python 用コード (MakeCode エディタ互換)
+├── main.js          <-- JavaScript 単体テスト・シミュレート用コード
+├── main_makecode.js <-- MakeCode JavaScript 用コード (MakeCode エディタ互換)
 └── README.md        <-- 本ドキュメント
 ```
 
@@ -41,8 +41,8 @@ invader/
 ### MakeCode Web エディタで試す
 
 1. ブラウザで [MakeCode for micro:bit](https://makecode.microbit.org/) を開きます。
-2. 「新しいプロジェクト」を作成し、言語設定を **Python** に変更します。
-3. `main_makecode.py` のコードをコピー＆ペーストして読み込ませます。
+2. 「新しいプロジェクト」を作成し、言語設定を **JavaScript** に変更します。
+3. `main_makecode.js` のコードをコピー＆ペーストして読み込ませます。
 4. シミュレータ上で A/B/A+B ボタンをクリックし、またシミュレータの **「SHAKE」** ボタンを押してリロード動作を確認します。
 
 ### AI Agent スキルでの自動レビュー・テスト
@@ -50,6 +50,6 @@ invader/
 AI Agent (`agu`, `claude`, `codex` 等) を使用する場合、以下の指示プロンプトで自動動作確認を行えます。
 
 - **MakeCode ブロック互換性チェック**:
-  > `invader/main_makecode.py` が MakeCode エディタで問題なくビジュアルブロックに変換できるか `microbit-block-reviewer` スキルで検証してください。
+  > `invader/main_makecode.js` が MakeCode エディタで問題なくビジュアルブロックに変換できるか `microbit-block-reviewer` スキルで検証してください。
 - **シミュレータでの自動テスト**:
   > `microbit-sim-tester` スキルを使い、MakeCode シミュレータ上で A/B ボタン操作と SHAKE イベントによるリロードを試して LED の変化をスクショ撮影してください。

@@ -24,7 +24,7 @@ for skill_path in "$SCRIPT_DIR"/*; do
       target_link="$target_dir/$skill_name"
 
       # 既存のリンクまたはディレクトリが存在し、リンク先が異なる場合やディレクトリの場合の処理
-      if [ -e "$target_link" ] || [ -L "$target_link" ]; then
+      if [ -L "$target_link" ] || [ -e "$target_link" ]; then
         current_target="$(readlink "$target_link" || true)"
         if [ "$current_target" = "$skill_path" ]; then
           echo "  [OK] Already linked in $target_dir"

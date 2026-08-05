@@ -73,9 +73,14 @@ async function captureDemoFrames() {
             });
         }, angle);
 
-        await page.waitForTimeout(600);
+        await page.waitForTimeout(800);
         const fileName = `frame_${String(i).padStart(2, '0')}.png`;
-        await page.screenshot({ path: path.join(framesDir, fileName) });
+        const simElement = page.locator('#simframe, .simframe, iframe[src*="sim"]').first();
+        if (await simElement.isVisible()) {
+            await simElement.screenshot({ path: path.join(framesDir, fileName) });
+        } else {
+            await page.screenshot({ path: path.join(framesDir, fileName) });
+        }
     }
 
     await browser.close();

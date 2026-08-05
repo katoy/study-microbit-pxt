@@ -19,6 +19,14 @@ Since MakeCode does not support direct upload of `.py` files via the import UI (
 
 ---
 
+## Prompt Examples (起動プロンプト例)
+
+- 「`main.py` を MakeCode エディタに読み込んでブロック表示にして」
+- 「Python スクリプトを MakeCode Web エディタに流し込んで視覚的に確認して」
+- 「ローカルの Python コードを MakeCode の Monaco エディタにインポートして」
+
+---
+
 ## Steps
 
 ### Step 1: Open MakeCode in Browser

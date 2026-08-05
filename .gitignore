@@ -10,7 +10,7 @@ microbit-pxt/
 ehthumbs.db
 Thumbs.db
 
-# MakeCode / PXT project dependencies and builds
+# Node / MakeCode / PXT project dependencies and builds
 node_modules/
 pxt_modules/
 .pxt/
@@ -19,17 +19,30 @@ built/
 yotta_modules/
 yotta_targets/
 
+# Python caches & virtual environments
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+
+# Temporary media & frame captures
+screenshots/frames/
+
 # Development tools & local configurations
 .vscode/
+.idea/
 .env
 .env.local
 .env.*.local
 *.log
 
-# Playwright / Testing
+# Playwright / Testing & Coverage
 .playwright-mcp/
 test-results/
 playwright-report/
 blob-report/
 coverage/
 .nyc_output/
+

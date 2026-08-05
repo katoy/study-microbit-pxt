@@ -19,6 +19,14 @@ This skill guides the agent in building a Micro:bit MakeCode project locally and
 
 ---
 
+## Prompt Examples (起動プロンプト例)
+
+- 「Micro:bit プロジェクトをビルドして MakeCode エディタで開いて」
+- 「ローカルで `npx pxt build` を実行して、生成された hex ファイルをブラウザの MakeCode に読み込んで」
+- 「ビルドした `built/binary.hex` を MakeCode デスクトップアプリで開いて検証して」
+
+---
+
 ## Steps
 
 ### Step 1: Build the Project Locally

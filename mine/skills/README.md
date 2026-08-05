@@ -15,14 +15,31 @@
 
 ## 含まれるスキル
 
-- [`microbit-block-reviewer`](file:///Users/katoy/github/study-microbit-pxt/mine/skills/microbit-block-reviewer/SKILL.md)
+- [`microbit-block-reviewer`](microbit-block-reviewer/SKILL.md)
   - MakeCode micro:bit 用の Python / TypeScript コードをレビューし、MakeCode ブロック化への互換性・非対応構文・API差異の検出と最適化提案、および Playwright を用いた自動検証を行うスキル。
-- [`microbit-build-and-open`](file:///Users/katoy/github/study-microbit-pxt/mine/skills/microbit-build-and-open/SKILL.md)
+  - **起動プロンプト例**:
+    - **簡素な例**: 「`main.py` がブロックに変換できるかレビューして」
+    - **詳細な例**: 「`main.py` 内の MicroPython 構文や API（`time.sleep` 等）が MakeCode ブロックエディタと互換性があるかレビューし、非対応部分があれば MakeCode Python API にリファクタリングして」
+- [`microbit-build-and-open`](microbit-build-and-open/SKILL.md)
   - ローカルで MakeCode/micro:bit プロジェクトをビルドし、生成された `.hex` ファイルを MakeCode デスクトップアプリまたは Playwright ブラウザ操作経由で開くスキル。
-- [`microbit-import-python`](file:///Users/katoy/github/study-microbit-pxt/mine/skills/microbit-import-python/SKILL.md)
+  - **起動プロンプト例**:
+    - **簡素な例**: 「ビルドして MakeCode で開いて」
+    - **詳細な例**: 「ローカルで `npx pxt build` を実行してプロジェクトをビルドし、生成された `built/binary.hex` を Playwright 経由でブラウザの MakeCode エディタにインポートして動作確認して」
+- [`microbit-generate-blocks`](microbit-generate-blocks/SKILL.md)
+  - Playwright ブラウザ自動操作を用いて MakeCode エディタへ TypeScript (`main.ts`) を注入・コンパイルし、IndexedDB よりビジュアルブロック定義 XML (`main.blocks`) を自動抽出・保存するスキル。
+  - **起動プロンプト例**:
+    - **簡素な例**: 「`main.ts` から `main.blocks` を生成して」
+    - **詳細な例**: 「`main.ts` を編集したので Playwright で MakeCode に読み込ませ、IndexedDB からビジュアルブロック定義 XML (`main.blocks`) を抽出して保存し `pxt.json` を更新して」
+- [`microbit-import-python`](microbit-import-python/SKILL.md)
   - ローカルの Python コード（`main.py` 等）を MakeCode エディタに読み込み、Monaco エディタへの注入およびブロック表現への相互変換を行うスキル。
-- [`microbit-sim-tester`](file:///Users/katoy/github/study-microbit-pxt/mine/skills/microbit-sim-tester/SKILL.md)
-  - Playwright を活用し、MakeCode Web エディタ上のシミュレータでボタン（A/B/A+B）押下や加速度・傾きセンサー等のイベントをエミュレートし、5x5 LED マトリクスの表示結果をスクリーンショット撮影して自動検証するスキル。
+  - **起動プロンプト例**:
+    - **簡素な例**: 「`main.py` を MakeCode に取り込んで」
+    - **詳細な例**: 「ローカルの `main.py` を MakeCode Web エディタの Monaco エディタに流し込み、エラーなくブロック表示に変換できるか確認して」
+- [`microbit-sim-tester`](microbit-sim-tester/SKILL.md)
+  - Playwright を活用し、MakeCode Web エディタ上のシミュレータでボタン（A/B/A+B）押下や加速度・傾きセンサー等のイベント発火をエミュレートし、5x5 LED マトリクスの表示結果をスクリーンショット撮影して検証するスキル。
+  - **起動プロンプト例**:
+    - **簡素な例**: 「シミュレータでボタン A を押して表示をテストして」
+    - **詳細な例**: 「MakeCode シミュレータ上でボタン A や Shake（シェイク）イベントを発火させ、5x5 LED マトリクスに正しいグラフィックが表示されるかスクリーンショットを撮影して検証して」
 
 ---
 

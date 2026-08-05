@@ -57,9 +57,17 @@ mine/
 │   ├── main.py                <-- メインプログラムコード (Python)
 │   ├── main_makecode.py       <-- MakeCode 用調整済み Python コード
 │   └── README.md              <-- サンプルの説明ドキュメント
+├── compass/                    <-- 8方向方位磁石アプリケーション (TypeScript / PXT)
+│   ├── main.ts                <-- メインプログラムコード
+│   ├── src/compass.ts         <-- 8方向判定ロジック
+│   └── README.md              <-- 方位磁石プロジェクトの詳細ドキュメント
+├── compass32/                  <-- 32方向高精度方位磁石アプリケーション (Single Source of Truth 自動同期)
+│   ├── main.ts                <-- 自動生成メインプログラムコード
+│   ├── src/compass32.ts       <-- 32方向判定ロジック & 描画データ (Single Source of Truth)
+│   └── README.md              <-- 32方向方位磁石の詳細ドキュメント
 ├── invader/                   <-- Shake & Shoot インベーダーゲームサンプル
-│   ├── main.py                <-- メインプログラムコード (MicroPython)
-│   ├── main_makecode.py       <-- MakeCode 用調整済み Python コード
+│   ├── main.js                <-- JavaScript 単体テスト・シミュレート用コード
+│   ├── main_makecode.js       <-- MakeCode JavaScript 用コード (MakeCode エディタ互換)
 │   └── README.md              <-- サンプルの説明ドキュメント
 ├── skills/                    <-- AI Agent 用カスタムスキル定義
 │   ├── microbit-block-reviewer/  <-- MakeCode ブロック互換性・非対応構文の自動レビュー

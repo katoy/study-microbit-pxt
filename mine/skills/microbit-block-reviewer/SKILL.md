@@ -21,6 +21,14 @@ When writing Python code for MakeCode, using unsupported Python syntax or standa
 
 ---
 
+## Prompt Examples (起動プロンプト例)
+
+- 「この `main.py` が MakeCode のブロックに正常に変換できるかレビューして」
+- 「MicroPython のコードを MakeCode 用の Python API にリファクタリングして、ブロック互換性をチェックして」
+- 「`main.ts` のコードに MakeCode ブロックエディタでエラーやグレーブロックになる記述がないかレビューして」
+
+---
+
 ## Static Review Guidelines
 
 ### 1. API Mapping Check (MicroPython vs. MakeCode Python)

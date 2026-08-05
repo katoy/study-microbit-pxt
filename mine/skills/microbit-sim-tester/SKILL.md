@@ -24,6 +24,14 @@ Without needing physical micro:bit hardware, agents can:
 
 ---
 
+## Prompt Examples (起動プロンプト例)
+
+- 「MakeCode シミュレータでボタン A を押したときの表示をテストしてスクリーンショットを撮影して」
+- 「micro:bit の Shake (シェイク) イベントを発火させて 5x5 LED マトリクスの表示結果を検証して」
+- 「シミュレータ上でボタン A+B やロゴタッチ操作を行って、正しくイベントハンドラが動作するか動作確認して」
+
+---
+
 ## Simulator UI Structure & Elements
 
 MakeCode's simulator is embedded inside an `iframe` or rendered as an SVG element on `https://makecode.microbit.org/`.
