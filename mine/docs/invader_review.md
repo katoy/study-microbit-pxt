@@ -1,3 +1,25 @@
+# インベーダーゲーム レビュー (`invader`)
+
+ゲームロジックのテスト用 JavaScript ファイルと、MakeCode 移植向け JavaScript / TypeScript ファイルが混在しているプロジェクト、およびテスト環境のレビュー詳細です。
+
+---
+
+## 📋 プロジェクト構成
+1. **`main.js`**:
+   一般的なJavaScript環境（Node.jsなど）で動作し、モックデバイスを用いたユニットテストが可能な構造になっています。
+2. **`main_makecode.js`**:
+   `main.js` のロジックを micro:bit (MakeCode JS/TS) 用にアレンジし、`basic.forever` 等のAPIを用いて移植したものです。
+
+---
+
+## 📊 評価: **PASS** (完全互換 - 対処済み)
+
+* **メインコード**: [`invader/main_makecode.js`](file:///Users/katoy/github/study-microbit-pxt/mine/invader/main_makecode.js)
+* **ブロック互換性**: **100% 互換**。以前は 2次元配列（`bullets: number[][]` 等）や `Array.filter` などの高度な構文を使用しており、ブロック化した際に「グレーブロック」になってビジュアル編集ができませんでしたが、1次元配列への分離と `splice` による削除処理への書き換え（対処済み）により、すべてのコードがビジュアルブロックとして表現・編集可能になりました。
+
+#### 🟩 対応後のコード (ブロック完全互換版)
+1次元の `number[]` 配列で座標をXとYに分けて管理し、`splice`（削除）メソッドを使ってインデックス走査で敵と弾の衝突処理を行う、ブロック完全互換バージョンです。
+```typescript
 let MAX_AMMO = 3
 let playerX = 2
 let ammo = MAX_AMMO
@@ -151,4 +173,20 @@ basic.forever(function () {
     basic.showString("SCORE:" + score)
     basic.pause(1000)
 })
+```
 
+---
+
+## 🧪 テストコードのレビュー (`invader/tests/`)
+
+### ① ユニットテスト (`main.test.js`)
+* **ソース**: [`main.test.js`](file:///Users/katoy/github/study-microbit-pxt/mine/invader/tests/main.test.js)
+* **評価**: **EXCELLENT** (軽量かつ高品質)
+* **分析**: Node.js 標準の `node:test` および `node:assert/strict` を使用しており、サードパーティ製の重いテストランナーを使用せず極めて高速に動作します。
+* **テストダブル**: 仮想の `MockDisplay` や `MockDevice` を定義し、ボタン押下（A/B/AB）、リロード（Shake）、弾と敵の衝突判定、最下段侵入時のゲームオーバー、描画タイミング（奇数/偶数 tick）など、すべてのゲームステップを完全にシミュレート・検証しています。
+
+### ② シミュレータE2Eテスト (`makecode-sim.spec.js`)
+* **ソース**: [`makecode-sim.spec.js`](file:///Users/katoy/github/study-microbit-pxt/mine/invader/tests/makecode-sim.spec.js)
+* **評価**: **EXCELLENT**
+* **分析**: Playwright を用いて Web 版 MakeCode エディタに `main_makecode.js` を流し込み、シミュレータ（iframe）を起動して自動的に A ボタン（左移動）、B ボタン（右移動）、および Shake（リロード）アクションを発火させ、挙動確認と最終状態のスクリーンショット撮影を行います。
+* **検証結果**: 修正された `main_makecode.js` でも問題なく動作し、E2Eテストは **PASS** しています。

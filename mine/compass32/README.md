@@ -73,9 +73,9 @@ compass32/
 ├── main.blocks          <-- ブロックエディタ用の同期ファイル (Blockly XML)
 ├── pxt.json             <-- PXT プロジェクト設定ファイル
 ├── src/
-│   └── compass32.ts     <-- 32方向判定ロジック & 描画データ (Single Source of Truth)
+│   ├── compass32.ts     <-- 32方向判定ロジック & 描画データ
+│   └── app.ts           <-- アプリケーションのエントリーコード (Single Source of Truth 結合対象)
 ├── scripts/
-│   ├── sync.ts          <-- src/compass32.ts から main.ts / main.blocks への条件付き自動同期
 │   ├── capture_screenshots.ts <-- 静止画スクリーンショットの取得
 │   └── capture_demo_frames.ts <-- デモ GIF 用全 32 方向フレームの取得
 ├── screenshots/
@@ -118,17 +118,18 @@ npm run build
 
 ### 4. main.ts / main.blocks の自動同期メカニズム
 
-本プロジェクトでは `src/compass32.ts` が判定閾値・描画座標データの **唯一の正 (Single Source of Truth)** です。
+本プロジェクトでは `src/` 配下の TypeScript モジュールとエントリーコード（`src/app.ts`）が **唯一の正 (Single Source of Truth)** です。
 
 ```mermaid
 graph TD
-    A["src/compass32.ts<br>(データ・ロジックの正解)"] -->|自動比較 & 生成| B["main.ts<br>(MakeCode TS)"]
-    B -->|変更検出時のみ同期| C["main.blocks & binary.hex<br>(Blockly & ビルド成果物)"]
+    A["src/compass32.ts<br>(方位判定ロジック)"] -->|結合| C["main.ts<br>(MakeCode TS)"]
+    B["src/app.ts<br>(実行イベントループ)"] -->|結合| C
+    C -->|変更検出時のみ同期| D["main.blocks & binary.hex<br>(Blockly & ビルド成果物)"]
 ```
 
-`npm test`, `npm run build`, `npm run serve` などのコマンド実行直前に [`scripts/sync.ts`](scripts/sync.ts) が全自動で起動します。
-* `src/compass32.ts` に変更がない通常時は、**数ミリ秒の高速判定** で通過します。
-* `src/compass32.ts` に変更が検知された場合のみ、[`main.ts`](main.ts) が自動更新され、Playwright 経由で [`main.blocks`](main.blocks) および `built/binary.hex` が一括で最新化されます。
+`npm test`, `npm run build`, `npm run serve` などのコマンド実行直前に、グローバル共有スキルである `microbit-pxt-sync` 内の同期スクリプトが全自動で起動します。
+* `src/` 内のファイルに変更がない通常時は、**数ミリ秒の高速判定** で通過します。
+* 変更が検知された場合のみ、`main.ts` が自動生成・マージされ、Playwright 経由で `main.blocks` および `built/binary.hex` が一括で最新化されます。
 
 ### 5. スクリーンショットおよびデモ GIF の生成
 

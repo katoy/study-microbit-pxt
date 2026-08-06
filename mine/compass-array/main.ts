@@ -1,6 +1,8 @@
-// Automatically generated. Do not edit directly.
-const BOUNDS = [23, 68, 113, 158, 203, 248, 293];
-const DIRECTIONS = [
+let DIRECTIONS: ArrowNames[] = []
+let BOUNDS: number[] = []
+
+// 起動時に配列を初期化（onStartブロックにマッピングされる）
+DIRECTIONS = [
     ArrowNames.North,
     ArrowNames.NorthEast,
     ArrowNames.East,
@@ -8,7 +10,8 @@ const DIRECTIONS = [
     ArrowNames.South,
     ArrowNames.SouthWest,
     ArrowNames.West
-];
+]
+BOUNDS = [23, 68, 113, 158, 203, 248, 293]
 
 function getDirection(degrees: number): ArrowNames {
     if (degrees >= 338) {
@@ -26,3 +29,4 @@ basic.forever(function () {
     let degrees = input.compassHeading()
     basic.showArrow(getDirection(degrees))
 })
+
