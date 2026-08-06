@@ -94,8 +94,14 @@ If the desktop application is not available, use Playwright to navigate to the b
    }
    ```
 
-5. **Verify the Loading**
-   Verify that the Page URL updates to include `#editor`, showing the loaded workspace, and take a screenshot using `browser_take_screenshot`.
+5. **Bring Window to Front & Verify**
+   Bring the MakeCode browser window/tab to the front and verify that the Page URL updates to include `#editor`, showing the loaded workspace, then take a screenshot using `browser_take_screenshot`.
+   ```javascript
+   async (page) => {
+     await page.bringToFront();
+     return "Brought MakeCode window to front";
+   }
+   ```
 
 ---
 
@@ -104,3 +110,4 @@ If the desktop application is not available, use Playwright to navigate to the b
 - [ ] `built/binary.hex` exists.
 - [ ] For Option A: Desktop application opens and loads the hex file.
 - [ ] For Option B: Browser URL updates to include `#editor`, showing the loaded workspace.
+- [ ] MakeCode window is brought to the front.

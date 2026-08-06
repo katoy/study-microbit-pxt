@@ -94,11 +94,20 @@ async (page) => {
 }
 ```
 
-### Step 6: Verify
+### Step 6: Bring MakeCode Window to Front
+Ensure the MakeCode editor window/tab is active and brought to the front:
+```javascript
+async (page) => {
+  await page.bringToFront();
+}
+```
+
+### Step 7: Verify
 Take a screenshot to verify that:
 - The code load is complete.
 - The simulator is active.
 - There are no compilation error tooltips.
+- The MakeCode browser window is focused and in the foreground.
 
 ---
 
@@ -109,3 +118,4 @@ Take a screenshot to verify that:
 - [ ] The local Python code is set inside Monaco Editor.
 - [ ] No compilation errors occur (or code is adapted to MakeCode Python).
 - [ ] Visual blocks are rendered properly when switched back to Blocks view.
+- [ ] MakeCode window is brought to the front.

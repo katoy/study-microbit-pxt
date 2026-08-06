@@ -128,6 +128,18 @@ async (page) => {
 
 ---
 
+### Step 4: Bring MakeCode Window to Front
+
+At the end of testing, ensure the MakeCode editor window/tab is active and brought to the front:
+```javascript
+async (page) => {
+  await page.bringToFront();
+  return "Brought MakeCode window to front";
+}
+```
+
+---
+
 ## Verification Checklist
 
 - [ ] MakeCode simulator loaded successfully.
@@ -135,3 +147,4 @@ async (page) => {
 - [ ] Sensor events (Shake / Logo Touch) respond as defined in code.
 - [ ] 5x5 LED matrix updates correctly after interaction.
 - [ ] Screenshot captured for visual inspection.
+- [ ] MakeCode window is brought to the front.
