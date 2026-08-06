@@ -1,3 +1,6 @@
+// 8-direction compass for micro:bit
+// Automatically generated from src/compass.ts. Do not edit directly.
+
 function getDirection(degrees: number): ArrowNames {
     if (degrees < 23 || degrees >= 338) {
         return ArrowNames.North

@@ -1,116 +1,167 @@
 # hello-microbit
 
-MakeCode / micro:bit (PXT) の TypeScript プロジェクトです。
-
-## 機能概要
-
-このプロジェクトには、以下の micro:bit の動作が実装されています：
-- **起動時**: LED にハートアイコンを表示します。
-- **Aボタン押下**: LED に笑顔アイコンを表示します。
-- **Bボタン押下**: LED に悲しい顔アイコンを表示します。
-- **A+Bボタン押下**: 「Hello!」とスクロール表示したあと、ハートアイコンに戻ります。
-- **シェイク (Shake)**: 1〜6のランダムな数字（サイコロ）を1秒間表示したあと、画面を消去します。
+MakeCode micro:bit (PXT) の TypeScript プロジェクトです。ボタン操作やジェスチャー（シェイク）に応じて、LED マトリクス上にアイコン、文字列、およびランダム数値（サイコロ）を表示します。
 
 ---
 
-## 開発環境のセットアップ
+## 📋 目次 (TOC)
 
-Node.js 環境がインストールされていることを前提とします。
+- [🧭 仕様・動作イベント一覧](#specification)
+- [📁 ディレクトリ構成](#directory-structure)
+- [🛠️ 開発・ビルド手順](#development-and-build)
+  - [1. 依存パッケージのインストール](#1-依存パッケージのインストール)
+  - [2. PXT ターゲットの設定](#2-pxt-ターゲットの設定)
+  - [3. ローカル開発サーバーの起動](#3-ローカル開発サーバーの起動)
+  - [4. プロジェクトのビルド](#4-プロジェクトのビルド)
+  - [5. main.blocks の同期と注意点](#5-mainblocks-の同期と注意点)
+- [🧪 テスト・検証実行方法](#testing)
+  - [1. すべてのテストを一括実行 (推奨)](#1-すべてのテストを一括実行-推奨)
+  - [2. 個別テストの実行](#2-個別テストの実行)
+- [📊 カバレッジ計測結果表示方法](#coverage)
+- [🤖 AI Agent スキルの活用プロンプト例](#ai-agent-prompts)
 
-```bash
-# 依存パッケージのインストール
-npm install
+---
 
-# PXT ターゲットの設定 (microbit)
-npx pxt target microbit
+## <a id="specification"></a>🧭 仕様・動作イベント一覧
+
+入力イベント（ボタン操作・ジェスチャーなど）に応じて、以下の動作を行います。
+
+| トリガー / イベント | 動作概要 | 表示内容 (`MakeCode API`) |
+|---|---|---|
+| 起動時 (On Start) | LED マトリクスにハートアイコンを表示します。 | `basic.showIcon(IconNames.Heart)` |
+| Aボタン押下 | LED マトリクスに笑顔アイコンを表示します。 | `basic.showIcon(IconNames.Happy)` |
+| Bボタン押下 | LED マトリクスに悲しい顔アイコンを表示します。 | `basic.showIcon(IconNames.Sad)` |
+| A+Bボタン同時押下 | 「Hello!」とスクロール表示したあと、ハートアイコンに戻ります。 | `basic.showString("Hello!")` ➔ `basic.showIcon(IconNames.Heart)` |
+| ゆさぶられたとき (Shake) | 1〜6のランダムな数字（サイコロ）を 1 秒間表示したあと、画面を消去します。 | `basic.showNumber(randint(1, 6))` ➔ `basic.pause(1000)` ➔ `basic.clearScreen()` |
+
+---
+
+## <a id="directory-structure"></a>📁 ディレクトリ構成
+
+```text
+hello-microbit/
+├── main.ts              <-- メインプログラムコード (MakeCode PXT 用)
+├── main.blocks          <-- ブロックエディタ用の同期ファイル (Blockly XML)
+├── pxt.json             <-- PXT プロジェクト設定ファイル
+├── package.json         <-- npm パッケージ・スクリプト定義
+├── test.sh              <-- テスト一括実行シェルスクリプト
+├── tests/
+│   ├── test.ts              <-- PXT 標準テスト
+│   ├── coverage.test.ts      <-- Jest 単体テスト (カバレッジ計測用)
+│   ├── mock-microbit.ts      <-- micro:bit API モック
+│   ├── playwright-test.spec.ts <-- Playwright E2E シミュレータテスト
+│   └── import-python.spec.ts  <-- MakeCode Python インポート検証 E2E テスト
+└── README.md            <-- 本ドキュメント
 ```
 
 ---
 
-## 開発と編集方法
+## <a id="development-and-build"></a>🛠️ 開発・ビルド手順
 
-PXTプロジェクトでは、`main.ts` を直接コードエディタで編集する以外に、MakeCode のブロックエディタを使用して `main.blocks` と `main.ts` を相互同期しながら開発することができます。
+### 1. 依存パッケージのインストール
 
-### ローカル開発サーバーの起動
+```bash
+npm install
+```
 
-以下のコマンドを実行すると開発サーバーが起動し、自動的にブラウザ上でブロックエディタが開きます。
+### 2. PXT ターゲットの設定
+
+```bash
+npx pxt target microbit
+```
+
+### 3. ローカル開発サーバーの起動
+
+MakeCode のブロックエディタをローカルで起動して開発・確認を行えます。
 
 ```bash
 npx pxt serve
 ```
 
-ブラウザ上でブロックやコードを編集すると、ローカルファイルの [main.blocks](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) および [main.ts](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) が自動的にリアルタイムで同期・更新されます。
+ブラウザ上でブロックやコードを編集すると、ローカルファイルの `main.blocks` および `main.ts` が自動的にリアルタイムで同期・更新されます。
 
-### プログラム更新後の main.blocks の更新（同期）
+### 4. プロジェクトのビルド
 
-テキストエディタで [main.ts](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) などのプログラムファイルを直接編集・更新した場合、ローカルの [main.blocks](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) ファイルは自動的には更新されません。[main.blocks](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) を最新状態と同期させるには、以下のいずれかの方法を行います。
-
-#### 方法1: ローカル開発サーバー（`npx pxt serve`）を使用する
-1. `npx pxt serve` を実行してローカル開発サーバーを起動し、ブラウザでブロックエディタを開きます。
-2. 開発サーバーが起動している状態で、テキストエディタで [main.ts](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) を編集して保存します。
-3. ブラウザ上のエディタが自動的にリロードされ、変更された [main.ts](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) に基づいてブロックが再生成されます。これと同時に、ローカルの [main.blocks](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) も自動的に更新されます。
-
-#### 方法2: ビルドした `.hex` ファイルを再インポートする
-1. `npx pxt build` を実行して `built/binary.hex` をビルドします。
-2. 生成された `.hex` ファイルを MakeCode エディタ（デスクトップアプリまたはブラウザ版）に再度インポートします。
-3. エディタがプロジェクトを読み込み、ブロック画面を表示したタイミングで [main.blocks](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) が自動的に再生成されます。
-
-> [!IMPORTANT]
-> **ブロックへの逆変換（デコンパイル）における注意点**
-> [main.ts](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) でブロックエディタがサポートしていない複雑な TypeScript 構文（高度なクラス定義、ジェネリクス、一部のJavaScript組み込み関数など）を記述した場合、ブロックに逆変換する際に「グレーのJavaScriptブロック」として表示されるか、エラーが発生してブロックエディタで開けなくなることがあります。ブロックエディタと同期させたい場合は、MakeCodeが対応している標準的なAPIやシンプルな構文を使用してください。
-
----
-
-## ビルド
-
-プロジェクトをコンパイルして micro:bit 用の `.hex` バイナリをビルドします（E2Eテストにも使用します）。
+micro:bit 実機や MakeCode エディタへインポートするための `.hex` ファイルを作成します（E2E テストの事前準備としても必要です）。
 
 ```bash
 npx pxt build
 ```
-ビルド結果は `built/binary.hex` に生成されます。
+ビルド完了後、`built/binary.hex` が生成されます。
+
+### 5. main.blocks の同期と注意点
+
+テキストエディタで `main.ts` を直接変更した場合、ローカルの `main.blocks` は自動同期されません。
+`npx pxt serve` を実行中にしてブラウザで開くか、生成された `.hex` ファイルを MakeCode エディタに再インポートすることで `main.blocks` が最新化されます。
+
+> [!IMPORTANT]
+> ブロックエディタと双方向同期する場合は、MakeCode が標準サポートする文法で記述してください。高度なクラス定義やサポート対象外の TypeScript 構文を使用すると、ブロック変換時にグレーブロック化したりエラーになる場合があります。
 
 ---
 
-## テストの実行
+## <a id="testing"></a>🧪 テスト・検証実行方法
 
-このプロジェクトには3種類のテスト環境が統合されており、一括または個別に実行できます。
+このプロジェクトには 3 種類のテスト環境が統合されています。
 
-### 1. 全てのテストを一括実行（推奨）
+### 1. すべてのテストを一括実行 (推奨)
 
 以下のいずれかのコマンドを実行すると、「PXT標準テスト ➔ ビルド ➔ E2Eテスト ➔ カバレッジ計測」が順番に自動実行されます。
 
 ```bash
-# npm スクリプト経由
 npm test
-
-# または、シェルスクリプト経由
+# または
 ./test.sh
 ```
 
 ### 2. 個別テストの実行
 
 #### PXT 標準ユニットテスト
-[tests/test.ts](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/tests/test.ts) に記述された PXT の挙動・ロジックテストを実行します。
+`tests/test.ts` に記述された PXT の挙動・ロジックテストを実行します。
 ```bash
 npm run test:pxt
-# または
-npx pxt test
 ```
 
 #### Playwright E2E シミュレータテスト
-Playwright を使用してブラウザ上の MakeCode シミュレータにビルドした hex ファイルをロードし、実際にボタンクリックやシェイクなどのイベントを発生させて LED の点灯パターンの振る舞いを検証するテストです。
+Playwright を使用してブラウザ上の MakeCode シミュレータにビルドした `.hex` ファイルをロードし、ボタンクリックやシェイクなどのイベントに対する動作を検証します。
 ```bash
 npm run test:e2e
-# または
-npx playwright test
 ```
 
 #### Jest コードカバレッジ計測テスト
-micro:bit の各 API をモックし、[main.ts](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) に対する C0/C1 カバレッジを Jest で測定します。
+micro:bit API をモックし、`main.ts` に対する C0/C1 カバレッジを Jest で計測します。
 ```bash
 npm run test:cov
-# または
-npx jest
 ```
-実行後、ターミナル上にカバレッジ結果が出力されるほか、`coverage/index.html` に詳細な **HTML カバレッジレポート** が出力されます。
+
+---
+
+## <a id="coverage"></a>📊 カバレッジ計測結果表示方法
+
+`npm run test:cov`（または `npm test`）を実行すると、ターミナル上にコードカバレッジ結果が表示されます。
+
+- **Mac で HTML カバレッジレポートを開く場合**:
+  ```bash
+  open coverage/index.html
+  ```
+
+---
+
+## <a id="ai-agent-prompts"></a>🤖 AI Agent スキルの活用プロンプト例
+
+### 1. 簡素な例 (ワンライナー指示)
+
+- **ブロック互換性チェック**: `microbit-block-reviewer` で `main.ts` の互換性を検証して
+- **ビルド＆エディタ表示**: `microbit-build-and-open` で `.hex` をビルドし MakeCode で開いて
+- **シミュレータ検証**: `microbit-sim-tester` で Aボタンや Bボタンの動作と LED 表示のスクショを撮って
+
+### 2. 詳細な例 (条件・目的を明確にした指示)
+
+- **ブロック互換性チェック**:
+  > `main.ts` について、MakeCode ブロックエディタで非対応となる構文やグレーブロックになる記述がないか `microbit-block-reviewer` スキルで検証し、改善案を提示してください。
+
+- **ビルド＆エディタ表示**:
+  > `npx pxt build` を実行して `built/binary.hex` を生成し、`microbit-build-and-open` スキルを使って MakeCode エディタに読み込ませて開発環境を準備してください。
+
+- **シミュレータ検証**:
+  > `microbit-sim-tester` スキルを使って MakeCode シミュレータ上で Aボタン、Bボタン、A+Bボタン押下およびシェイクイベントを発火させ、LED マトリクスの表示結果をスクリーンショット撮影して検証してください。
+

@@ -4,7 +4,7 @@
   "scripts": {
     "sync": "tsx scripts/sync.ts",
     "screenshots": "tsx scripts/capture_screenshots.ts",
-    "screenshots:gif": "tsx scripts/capture_demo_frames.ts && magick -delay 20 -loop 0 screenshots/frames/frame_*.png screenshots/demo.gif",
+    "screenshots:gif": "tsx scripts/capture_demo_frames.ts && magick convert -delay 20 -loop 0 screenshots/frames/frame_*.png screenshots/demo.gif",
     "pretest": "npm run sync",
     "pretest:unit": "npm run sync",
     "pretest:e2e": "npm run sync",

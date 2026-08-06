@@ -45,6 +45,35 @@ micro:bit で動く 8 方向方位磁石（コンパス）アプリケーショ�
 | `248` <= deg < `293` (248°〜292°) | 西 (West) | `ArrowNames.West` |
 | `293` <= deg < `338` (293°〜337°) | 北西 (NorthWest) | `ArrowNames.NorthWest` |
 
+### 🛠️ 判定アルゴリズム (配列による簡素化)
+
+従来のネストされた大量の `if-else` 分岐から、境界値と方位を定義した配列を並行してループ探索するシンプルなアルゴリズムへリファクタリングされました。これにより、コードの保守性と拡張性が向上しています。
+
+```typescript
+const BOUNDS = [23, 68, 113, 158, 203, 248, 293];
+const DIRECTIONS = [
+    ArrowNames.North,
+    ArrowNames.NorthEast,
+    ArrowNames.East,
+    ArrowNames.SouthEast,
+    ArrowNames.South,
+    ArrowNames.SouthWest,
+    ArrowNames.West
+];
+
+export function getDirection(degrees: number): ArrowNames {
+    if (degrees >= 338) {
+        return ArrowNames.North;
+    }
+    for (let i = 0; i < BOUNDS.length; i++) {
+        if (degrees < BOUNDS[i]) {
+            return DIRECTIONS[i];
+        }
+    }
+    return ArrowNames.NorthWest;
+}
+```
+
 ---
 
 ## <a id="display-patterns"></a>📸 8方向矢印表示パターン
@@ -125,9 +154,9 @@ graph TD
     B -->|変更検出時のみ同期| C["main.blocks & binary.hex<br>(Blockly & ビルド成果物)"]
 ```
 
-`npm test`, `npm run build`, `npm run serve` などのコマンド実行直前に [`scripts/sync.ts`](file:///Users/katoy/github/study-microbit-pxt/mine/compass/scripts/sync.ts) が全自動で起動します。
+`npm test`, `npm run build`, `npm run serve` などのコマンド実行直前に [`scripts/sync.ts`](file:///Users/katoy/github/study-microbit-pxt/mine/compass-array/scripts/sync.ts) が全自動で起動します。
 * `src/compass.ts` に変更がない通常時は、**数ミリ秒の高速判定** で通過します。
-* `src/compass.ts` に変更が検知された場合のみ、[`main.ts`](file:///Users/katoy/github/study-microbit-pxt/mine/compass/main.ts) が自動更新され、Playwright 経由で [`main.blocks`](file:///Users/katoy/github/study-microbit-pxt/mine/compass/main.blocks) および `built/binary.hex` が一括で最新化されます。
+* `src/compass.ts` に変更が検知された場合のみ、[`main.ts`](file:///Users/katoy/github/study-microbit-pxt/mine/compass-array/main.ts) が自動更新され、Playwright 経由で [`main.blocks`](file:///Users/katoy/github/study-microbit-pxt/mine/compass-array/main.blocks) および `built/binary.hex` が一括で最新化されます。
 
 ### 5. スクリーンショットおよびデモ GIF の生成
 
