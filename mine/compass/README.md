@@ -1,22 +1,26 @@
 # Compass (方位磁石)
 
-micro:bit で動く方位磁石（コンパス）アプリケーションです。取得した角度（0°〜359°）に応じて、LED マトリクス上に 8 方向（北・北東・東・南東・南・南西・西・北西）の矢印アイコンを表示します。
+micro:bit で動く 8 方向方位磁石（コンパス）アプリケーションです。取得した角度（0°〜359°）に応じて、LED マトリクス上に 8 方向（北・北東・東・南東・南・南西・西・北西）の標準矢印アイコン（`ArrowNames`）を表示します。
+
+---
 
 ## 📋 目次 (TOC)
 
-- [操作デモ](#-操作デモ)
-- [仕様・方向判定ロジック](#-仕様方向判定ロジック)
-- [ディレクトリ構成](#-ディレクトリ構成)
-- [開発・ビルド手順](#-開発ビルド手順)
+- [🎬 操作デモ](#-操作デモ)
+- [🧭 仕様・8方向判定ロジック](#specification)
+- [📸 8方向矢印表示パターン](#display-patterns)
+- [📁 ディレクトリ構成](#directory-structure)
+- [🛠️ 開発・ビルド手順](#development-and-build)
   - [1. 依存パッケージのインストール](#1-依存パッケージのインストール)
   - [2. ローカル開発サーバーの起動](#2-ローカル開発サーバーの起動)
   - [3. プロジェクトのビルド](#3-プロジェクトのビルド)
   - [4. main.blocks の同期と注意点](#4-mainblocks-の同期と注意点)
-- [テスト実行方法](#-テスト実行方法)
+  - [5. スクリーンショットおよびデモ GIF の生成](#5-スクリーンショットおよびデモ-gif-の生成)
+- [🧪 テスト・検証実行方法](#testing)
   - [1. ユニットテスト実行 (Vitest)](#1-ユニットテスト実行-vitest)
   - [2. E2E テスト実行 (Playwright)](#2-e2e-テスト実行-playwright)
-- [カバレッジ計測結果表示方法](#-カバレッジ計測結果表示方法)
-- [AI Agent スキルの活用プロンプト例](#-ai-agent-スキルの活用プロンプト例)
+- [📊 カバレッジ計測結果表示方法](#coverage)
+- [🤖 AI Agent スキルの活用プロンプト例](#ai-agent-prompts)
 
 ---
 
@@ -26,7 +30,7 @@ micro:bit で動く方位磁石（コンパス）アプリケーションです�
 
 ---
 
-## 🧭 仕様・方向判定ロジック
+## <a id="specification"></a>🧭 仕様・8方向判定ロジック
 
 `input.compassHeading()` で取得した角度（`0` 〜 `359`）から、以下の 8 方向の矢印を出力します。
 
@@ -43,7 +47,23 @@ micro:bit で動く方位磁石（コンパス）アプリケーションです�
 
 ---
 
-## 📁 ディレクトリ構成
+## <a id="display-patterns"></a>📸 8方向矢印表示パターン
+
+micro:bit の LED マトリクスに表示される 8 方向の矢印アイコンパターン一覧です。
+
+| 北 (0°) | 北東 (45°) | 東 (90°) | 南東 (135°) |
+|:---:|:---:|:---:|:---:|
+| ![North](screenshots/00_north_0deg.png) | ![NorthEast](screenshots/01_northeast_45deg.png) | ![East](screenshots/02_east_90deg.png) | ![SouthEast](screenshots/03_southeast_135deg.png) |
+| `ArrowNames.North` | `ArrowNames.NorthEast` | `ArrowNames.East` | `ArrowNames.SouthEast` |
+
+| 南 (180°) | 南西 (225°) | 西 (270°) | 北西 (315°) |
+|:---:|:---:|:---:|:---:|
+| ![South](screenshots/04_south_180deg.png) | ![SouthWest](screenshots/05_southwest_225deg.png) | ![West](screenshots/06_west_270deg.png) | ![NorthWest](screenshots/07_northwest_315deg.png) |
+| `ArrowNames.South` | `ArrowNames.SouthWest` | `ArrowNames.West` | `ArrowNames.NorthWest` |
+
+---
+
+## <a id="directory-structure"></a>📁 ディレクトリ構成
 
 ```text
 compass/
@@ -52,19 +72,24 @@ compass/
 ├── pxt.json             <-- PXT プロジェクト設定ファイル
 ├── src/
 │   └── compass.ts       <-- 方位判定ロジック関数 (モジュール設計)
+├── scripts/
+│   ├── capture_screenshots.ts <-- 代表方位パターンの画像取得スクリプト
+│   └── capture_demo_frames.ts <-- デモ GIF・フレーム画像の自動取得スクリプト
+├── screenshots/
+│   ├── demo.gif         <-- 8方向回転デモ GIF アニメーション
+│   ├── 00_north_0deg.png ... <-- 代表方位パターン画像
+│   └── frames/          <-- 8方向回転アニメーション用フレーム画像
 ├── test/
 │   ├── unit/
 │   │   └── compass.test.ts  <-- Vitest ユニットテスト (カバレッジ 100%)
 │   └── e2e/
 │       └── compass.spec.ts  <-- Playwright E2E シミュレータテスト
-├── screenshots/
-│   └── demo.gif         <-- 操作デモ GIF
 └── README.md            <-- 本ドキュメント
 ```
 
 ---
 
-## 🛠️ 開発・ビルド手順
+## <a id="development-and-build"></a>🛠️ 開発・ビルド手順
 
 ### 1. 依存パッケージのインストール
 
@@ -97,13 +122,25 @@ npx pxt build
 > [!IMPORTANT]
 > ブロックエディタと双方向同期する場合は、MakeCode が標準サポートする文法で記述してください。
 
+### 5. スクリーンショットおよびデモ GIF の生成
+
+MakeCode シミュレータから最新の画像および 8 方向回転 GIF アニメーションを生成できます。
+
+```bash
+# 代表画像の撮影
+npm run screenshots
+
+# 8方向回転デモ GIF アニメーションの再生成
+npm run screenshots:gif
+```
+
 ---
 
-## 🧪 テスト実行方法
+## <a id="testing"></a>🧪 テスト・検証実行方法
 
 ### 1. ユニットテスト実行 (Vitest)
 
-全分岐網羅の単体テストをバックグラウンドで実行し、コードカバレッジを測定します。
+全 8 方向の分岐網羅単体テストを実行し、コードカバレッジを測定します。
 
 ```bash
 npm test
@@ -115,7 +152,7 @@ npm run test:unit
 
 ### 2. E2E テスト実行 (Playwright)
 
-Playwright を用いて MakeCode エディタ画面での要素読み込み・シミュレータ動作を検証します。
+Playwright を用いて MakeCode シミュレータ上での動的表示テストを実行します。
 
 ```bash
 npm run test:e2e
@@ -123,9 +160,8 @@ npm run test:e2e
 
 ---
 
-## 📊 カバレッジ計測結果表示方法
+## <a id="coverage"></a>📊 カバレッジ計測結果表示方法
 
-### 1. ターミナルでの計測結果表示
 `npm test`（または `npm run coverage`）を実行すると、ターミナル上に 100% カバレッジ結果が表示されます。
 
 ```text
@@ -138,25 +174,28 @@ All files   |     100 |      100 |     100 |     100 |
 ------------|---------|----------|---------|---------|-------------------
 ```
 
-### 2. HTML カバレッジレポートの表示
-カバレッジの行ごとの詳細をブラウザで閲覧する場合、計測後に生成される `coverage/index.html` を開きます。
-
-- **Mac で直接開く場合**:
+- **Mac で HTML カバレッジレポートを開く場合**:
   ```bash
   open coverage/index.html
   ```
 
 ---
 
-## 🤖 AI Agent スキルの活用プロンプト例
+## <a id="ai-agent-prompts"></a>🤖 AI Agent スキルの活用プロンプト例
 
-AI エージェント (`claude`, `codex`, `antigravity` 等) を使用する場合、以下の指示プロンプトで自動動作確認・検証を行えます。
+### 1. 簡素な例 (ワンライナー指示)
 
-- **MakeCode ブロック互換性チェック**:
-  > `main.ts` に MakeCode ブロックエディタで非対応となる構文やグレーブロックになる記述がないか `microbit-block-reviewer` スキルで検証してください。
+- **ブロック互換性チェック**: `microbit-block-reviewer` で `main.ts` の互換性を検証して
+- **ビルド＆エディタ表示**: `microbit-build-and-open` で `.hex` をビルドし MakeCode で開いて
+- **シミュレータ検証**: `microbit-sim-tester` で動かして LED 表示のスクショを撮って
 
-- **MakeCode エディタ起動 & .hex インポート**:
-  > `npx pxt build` を実行して `built/binary.hex` をビルドし、`microbit-build-and-open` スキルで Chrome の MakeCode エディタに読み込ませてください。
+### 2. 詳細な例 (条件・目的を明確にした指示)
 
-- **MakeCode シミュレータ動作検証 & キャプチャ**:
-  > `microbit-sim-tester` スキルを使い、MakeCode シミュレータ上で方位磁石の動作確認を行い、LED の矢印表示結果をスクリーンショット撮影してください。
+- **ブロック互換性チェック**:
+  > `main.ts` および `src/compass.ts` について、MakeCode ブロックエディタで非対応となる構文やグレーブロックになる記述がないか `microbit-block-reviewer` スキルで検証し、改善案を提示してください。
+
+- **ビルド＆エディタ表示**:
+  > `npx pxt build` を実行して `built/binary.hex` を生成し、`microbit-build-and-open` スキルを使って MakeCode エディタに読み込ませて開発環境を準備してください。
+
+- **シミュレータ検証**:
+  > `microbit-sim-tester` スキルを使って MakeCode シミュレータ上で方位（0°, 90°, 180°, 270°）を設定し、LED マトリクス上の矢印表示をスクリーンショット撮影して結果を検証してください。

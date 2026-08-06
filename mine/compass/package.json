@@ -2,6 +2,8 @@
   "name": "compass",
   "version": "1.0.0",
   "scripts": {
+    "screenshots": "tsx scripts/capture_screenshots.ts",
+    "screenshots:gif": "tsx scripts/capture_demo_frames.ts && magick convert -delay 20 -loop 0 screenshots/frames/frame_*.png screenshots/demo.gif",
     "test": "vitest run --coverage",
     "test:unit": "vitest run test/unit",
     "test:e2e": "playwright test test/e2e",
