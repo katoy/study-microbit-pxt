@@ -1,0 +1,44 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor & Tooling configurations
+.vscode/
+.idea/
+*.log
+.env
+.env.local
+.env.*.local
+
+# Node / MakeCode / PXT dependencies and builds
+node_modules/
+pxt_modules/
+.pxt/
+built/
+!built/binary.hex
+yotta_modules/
+yotta_targets/
+
+# Python caches & virtual environments
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+
+# Playwright / Testing, Coverage & Screenshots
+.playwright-mcp/
+test-results/
+playwright-report/
+blob-report/
+coverage/
+.nyc_output/
+screenshots/
