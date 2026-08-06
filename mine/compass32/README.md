@@ -126,9 +126,9 @@ graph TD
     B -->|変更検出時のみ同期| C["main.blocks & binary.hex<br>(Blockly & ビルド成果物)"]
 ```
 
-`npm test`, `npm run build`, `npm run serve` などのコマンド実行直前に [`scripts/sync.ts`](file:///Users/katoy/github/study-microbit-pxt/mine/compass32/scripts/sync.ts) が全自動で起動します。
+`npm test`, `npm run build`, `npm run serve` などのコマンド実行直前に [`scripts/sync.ts`](scripts/sync.ts) が全自動で起動します。
 * `src/compass32.ts` に変更がない通常時は、**数ミリ秒の高速判定** で通過します。
-* `src/compass32.ts` に変更が検知された場合のみ、[`main.ts`](file:///Users/katoy/github/study-microbit-pxt/mine/compass32/main.ts) が自動更新され、Playwright 経由で [`main.blocks`](file:///Users/katoy/github/study-microbit-pxt/mine/compass32/main.blocks) および `built/binary.hex` が一括で最新化されます。
+* `src/compass32.ts` に変更が検知された場合のみ、[`main.ts`](main.ts) が自動更新され、Playwright 経由で [`main.blocks`](main.blocks) および `built/binary.hex` が一括で最新化されます。
 
 ### 5. スクリーンショットおよびデモ GIF の生成
 

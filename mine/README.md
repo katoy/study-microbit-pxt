@@ -149,21 +149,21 @@ npx pxt build
 3. 「つづける (Continue)」をクリックしてプロジェクトをロード。
 
 ### 4. プログラム更新後の main.blocks の更新（同期）
-テキストエディタで [`main.ts`](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) などのプログラムファイルを直接編集・更新した場合、ローカルの [`main.blocks`](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) ファイルは自動的には更新されません。[`main.blocks`](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) を [`main.ts`](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) の最新状態と同期させるには、以下のいずれかの方法を行います。
+テキストエディタで [`main.ts`](hello-microbit/main.ts) などのプログラムファイルを直接編集・更新した場合、ローカルの [`main.blocks`](hello-microbit/main.blocks) ファイルは自動的には更新されません。[`main.blocks`](hello-microbit/main.blocks) を [`main.ts`](hello-microbit/main.ts) の最新状態と同期させるには、以下のいずれかの方法を行います。
 
 #### 方法 A: ローカル開発サーバー（`npx pxt serve`）を使用する（推奨）
 1. `npx pxt serve` を実行してローカル開発サーバーを起動し、ブラウザでブロックエディタを開きます。
-2. 開発サーバーが起動している状態で、テキストエディタで [`main.ts`](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) を編集して保存します。
-3. ブラウザ上のエディタが自動的にリロードされ、変更された [`main.ts`](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) に基づいてブロックが再生成されます。これと同時に、ローカルの [`main.blocks`](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) も自動的に更新されます。
+2. 開発サーバーが起動している状態で、テキストエディタで [`main.ts`](hello-microbit/main.ts) を編集して保存します。
+3. ブラウザ上のエディタが自動的にリロードされ、変更された [`main.ts`](hello-microbit/main.ts) に基づいてブロックが再生成されます。これと同時に、ローカルの [`main.blocks`](hello-microbit/main.blocks) も自動的に更新されます。
 
 #### 方法 B: ビルドした `.hex` ファイルを再インポートする
-1. テキストエディタで [`main.ts`](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) を編集後、`npx pxt build` を実行して `built/binary.hex` をビルドします。
+1. テキストエディタで [`main.ts`](hello-microbit/main.ts) を編集後、`npx pxt build` を実行して `built/binary.hex` をビルドします。
 2. 生成された `.hex` ファイルを MakeCode エディタ（デスクトップアプリまたはブラウザ版）に再度インポートします。
-3. エディタがプロジェクトを読み込み、ブロック画面を表示したタイミングで [`main.blocks`](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.blocks) が自動的に再生成されます。
+3. エディタがプロジェクトを読み込み、ブロック画面を表示したタイミングで [`main.blocks`](hello-microbit/main.blocks) が自動的に再生成されます。
 
 > [!IMPORTANT]
 > **ブロックへの逆変換（デコンパイル）における注意点**
-> [`main.ts`](file:///Users/katoy/github/study-microbit-pxt/mine/hello-microbit/main.ts) でブロックエディタがサポートしていない複雑な TypeScript 構文（高度なクラス定義、ジェネリクス、一部のJavaScript組み込み関数など）を記述した場合、ブロックに逆変換する際に「グレーのJavaScriptブロック」として表示されるか、エラーが発生してブロックエディタで開けなくなることがあります。ブロックエディタと同期させたい場合は、MakeCodeが対応している標準的なAPIやシンプルな構文を使用してください。
+> [`main.ts`](hello-microbit/main.ts) でブロックエディタがサポートしていない複雑な TypeScript 構文（高度なクラス定義、ジェネリクス、一部のJavaScript組み込み関数など）を記述した場合、ブロックに逆変換する際に「グレーのJavaScriptブロック」として表示されるか、エラーが発生してブロックエディタで開けなくなることがあります。ブロックエディタと同期させたい場合は、MakeCodeが対応している標準的なAPIやシンプルな構文を使用してください。
 
 ---
 
@@ -286,10 +286,10 @@ cd hello-microbit-python
 
 ### 提供スキル一覧
 
-- [`microbit-block-reviewer`](file:///Users/katoy/github/study-microbit-pxt/mine/skills/microbit-block-reviewer/SKILL.md): Python / TypeScript コードの MakeCode ブロックエディタ互換性レビューおよび構文検証。
-- [`microbit-build-and-open`](file:///Users/katoy/github/study-microbit-pxt/mine/skills/microbit-build-and-open/SKILL.md): ローカルビルドおよび `.hex` ファイルの MakeCode デスクトップアプリ/ブラウザへの自動ロード。
-- [`microbit-import-python`](file:///Users/katoy/github/study-microbit-pxt/mine/skills/microbit-import-python/SKILL.md): Python コードの MakeCode エディタへの自動インポートおよびブロック変換の自動操作。
-- [`microbit-sim-tester`](file:///Users/katoy/github/study-microbit-pxt/mine/skills/microbit-sim-tester/SKILL.md): Playwright を活用した MakeCode シミュレータ上でのボタン(A/B/A+B)操作・センサーイベント発火および 5x5 LED 表示スクショ自動検証。
+- [`microbit-block-reviewer`](skills/microbit-block-reviewer/SKILL.md): Python / TypeScript コードの MakeCode ブロックエディタ互換性レビューおよび構文検証。
+- [`microbit-build-and-open`](skills/microbit-build-and-open/SKILL.md): ローカルビルドおよび `.hex` ファイルの MakeCode デスクトップアプリ/ブラウザへの自動ロード。
+- [`microbit-import-python`](skills/microbit-import-python/SKILL.md): Python コードの MakeCode エディタへの自動インポートおよびブロック変換の自動操作。
+- [`microbit-sim-tester`](skills/microbit-sim-tester/SKILL.md): Playwright を活用した MakeCode シミュレータ上でのボタン(A/B/A+B)操作・センサーイベント発火および 5x5 LED 表示スクショ自動検証。
 
 ### スキルのセットアップ
 

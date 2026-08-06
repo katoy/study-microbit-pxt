@@ -2,7 +2,7 @@
   "name": "compass",
   "version": "1.0.0",
   "scripts": {
-    "sync": "tsx ~/.gemini/config/skills/microbit-pxt-sync/scripts/sync-tool.ts",
+    "sync": "tsx ../skills/microbit-pxt-sync/scripts/sync-tool.ts",
     "screenshots": "tsx scripts/capture_screenshots.ts",
     "screenshots:gif": "tsx scripts/capture_demo_frames.ts && magick -delay 20 -loop 0 screenshots/frames/frame_*.png screenshots/demo.gif",
     "pretest": "npm run sync",

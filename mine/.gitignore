@@ -19,8 +19,8 @@ Thumbs.db
 node_modules/
 pxt_modules/
 .pxt/
-built/
-!built/binary.hex
+**/built/*
+!**/built/binary.hex
 yotta_modules/
 yotta_targets/
 
