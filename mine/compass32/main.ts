@@ -81,68 +81,68 @@ basic.forever(function () {
     basic.clearScreen()
 
     if (idx == 0) {
-        led.plot(2, 0); led.plot(2, 1); led.plot(2, 2); led.plot(2, 3); led.plot(2, 4)
+        led.plotBrightness(2, 0, 255); led.plotBrightness(2, 1, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(2, 3, 60); led.plotBrightness(2, 4, 25)
     } else if (idx == 1) {
-        led.plot(3, 0); led.plot(3, 1); led.plot(2, 2); led.plot(2, 3); led.plot(2, 4)
+        led.plotBrightness(3, 0, 255); led.plotBrightness(3, 1, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(2, 3, 60); led.plotBrightness(2, 4, 25)
     } else if (idx == 2) {
-        led.plot(4, 0); led.plot(3, 1); led.plot(3, 2); led.plot(2, 3); led.plot(2, 4)
+        led.plotBrightness(4, 0, 255); led.plotBrightness(3, 1, 170); led.plotBrightness(3, 2, 110); led.plotBrightness(2, 3, 60); led.plotBrightness(2, 4, 25)
     } else if (idx == 3) {
-        led.plot(4, 0); led.plot(3, 1); led.plot(2, 2); led.plot(2, 3); led.plot(1, 4)
+        led.plotBrightness(4, 0, 255); led.plotBrightness(3, 1, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(2, 3, 60); led.plotBrightness(1, 4, 25)
     } else if (idx == 4) {
-        led.plot(4, 0); led.plot(3, 1); led.plot(2, 2); led.plot(1, 3); led.plot(0, 4)
+        led.plotBrightness(4, 0, 255); led.plotBrightness(3, 1, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(1, 3, 60); led.plotBrightness(0, 4, 25)
     } else if (idx == 5) {
-        led.plot(4, 1); led.plot(3, 2); led.plot(2, 2); led.plot(1, 3); led.plot(0, 4)
+        led.plotBrightness(4, 1, 255); led.plotBrightness(3, 2, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(1, 3, 60); led.plotBrightness(0, 4, 25)
     } else if (idx == 6) {
-        led.plot(4, 2); led.plot(3, 2); led.plot(2, 3); led.plot(1, 3); led.plot(0, 4)
+        led.plotBrightness(4, 2, 255); led.plotBrightness(3, 2, 170); led.plotBrightness(2, 3, 110); led.plotBrightness(1, 3, 60); led.plotBrightness(0, 4, 25)
     } else if (idx == 7) {
-        led.plot(4, 3); led.plot(3, 3); led.plot(2, 3); led.plot(1, 4); led.plot(0, 4)
+        led.plotBrightness(4, 3, 255); led.plotBrightness(3, 3, 170); led.plotBrightness(2, 3, 110); led.plotBrightness(1, 4, 60); led.plotBrightness(0, 4, 25)
     } else if (idx == 8) {
-        led.plot(4, 2); led.plot(3, 2); led.plot(2, 2); led.plot(1, 2); led.plot(0, 2)
+        led.plotBrightness(4, 2, 255); led.plotBrightness(3, 2, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(1, 2, 60); led.plotBrightness(0, 2, 25)
     } else if (idx == 9) {
-        led.plot(4, 4); led.plot(3, 4); led.plot(2, 3); led.plot(1, 3); led.plot(0, 3)
+        led.plotBrightness(4, 4, 255); led.plotBrightness(3, 4, 170); led.plotBrightness(2, 3, 110); led.plotBrightness(1, 3, 60); led.plotBrightness(0, 3, 25)
     } else if (idx == 10) {
-        led.plot(4, 4); led.plot(3, 3); led.plot(2, 3); led.plot(1, 2); led.plot(0, 2)
+        led.plotBrightness(4, 4, 255); led.plotBrightness(3, 3, 170); led.plotBrightness(2, 3, 110); led.plotBrightness(1, 2, 60); led.plotBrightness(0, 2, 25)
     } else if (idx == 11) {
-        led.plot(4, 4); led.plot(3, 3); led.plot(2, 2); led.plot(1, 2); led.plot(0, 1)
+        led.plotBrightness(4, 4, 255); led.plotBrightness(3, 3, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(1, 2, 60); led.plotBrightness(0, 1, 25)
     } else if (idx == 12) {
-        led.plot(4, 4); led.plot(3, 3); led.plot(2, 2); led.plot(1, 1); led.plot(0, 0)
+        led.plotBrightness(4, 4, 255); led.plotBrightness(3, 3, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(1, 1, 60); led.plotBrightness(0, 0, 25)
     } else if (idx == 13) {
-        led.plot(3, 4); led.plot(2, 3); led.plot(2, 2); led.plot(1, 1); led.plot(0, 0)
+        led.plotBrightness(3, 4, 255); led.plotBrightness(2, 3, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(1, 1, 60); led.plotBrightness(0, 0, 25)
     } else if (idx == 14) {
-        led.plot(2, 4); led.plot(2, 3); led.plot(1, 2); led.plot(1, 1); led.plot(0, 0)
+        led.plotBrightness(2, 4, 255); led.plotBrightness(2, 3, 170); led.plotBrightness(1, 2, 110); led.plotBrightness(1, 1, 60); led.plotBrightness(0, 0, 25)
     } else if (idx == 15) {
-        led.plot(1, 4); led.plot(1, 3); led.plot(1, 2); led.plot(0, 1); led.plot(0, 0)
+        led.plotBrightness(1, 4, 255); led.plotBrightness(1, 3, 170); led.plotBrightness(1, 2, 110); led.plotBrightness(0, 1, 60); led.plotBrightness(0, 0, 25)
     } else if (idx == 16) {
-        led.plot(2, 4); led.plot(2, 3); led.plot(2, 2); led.plot(2, 1); led.plot(2, 0)
+        led.plotBrightness(2, 4, 255); led.plotBrightness(2, 3, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(2, 1, 60); led.plotBrightness(2, 0, 25)
     } else if (idx == 17) {
-        led.plot(1, 4); led.plot(1, 3); led.plot(2, 2); led.plot(2, 1); led.plot(2, 0)
+        led.plotBrightness(1, 4, 255); led.plotBrightness(1, 3, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(2, 1, 60); led.plotBrightness(2, 0, 25)
     } else if (idx == 18) {
-        led.plot(0, 4); led.plot(1, 3); led.plot(1, 2); led.plot(2, 1); led.plot(2, 0)
+        led.plotBrightness(0, 4, 255); led.plotBrightness(1, 3, 170); led.plotBrightness(1, 2, 110); led.plotBrightness(2, 1, 60); led.plotBrightness(2, 0, 25)
     } else if (idx == 19) {
-        led.plot(0, 4); led.plot(1, 3); led.plot(2, 2); led.plot(2, 1); led.plot(3, 0)
+        led.plotBrightness(0, 4, 255); led.plotBrightness(1, 3, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(2, 1, 60); led.plotBrightness(3, 0, 25)
     } else if (idx == 20) {
-        led.plot(0, 4); led.plot(1, 3); led.plot(2, 2); led.plot(3, 1); led.plot(4, 0)
+        led.plotBrightness(0, 4, 255); led.plotBrightness(1, 3, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(3, 1, 60); led.plotBrightness(4, 0, 25)
     } else if (idx == 21) {
-        led.plot(0, 3); led.plot(1, 2); led.plot(2, 2); led.plot(3, 1); led.plot(4, 0)
+        led.plotBrightness(0, 3, 255); led.plotBrightness(1, 2, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(3, 1, 60); led.plotBrightness(4, 0, 25)
     } else if (idx == 22) {
-        led.plot(0, 2); led.plot(1, 2); led.plot(2, 1); led.plot(3, 1); led.plot(4, 0)
+        led.plotBrightness(0, 2, 255); led.plotBrightness(1, 2, 170); led.plotBrightness(2, 1, 110); led.plotBrightness(3, 1, 60); led.plotBrightness(4, 0, 25)
     } else if (idx == 23) {
-        led.plot(0, 1); led.plot(1, 1); led.plot(2, 1); led.plot(3, 0); led.plot(4, 0)
+        led.plotBrightness(0, 1, 255); led.plotBrightness(1, 1, 170); led.plotBrightness(2, 1, 110); led.plotBrightness(3, 0, 60); led.plotBrightness(4, 0, 25)
     } else if (idx == 24) {
-        led.plot(0, 2); led.plot(1, 2); led.plot(2, 2); led.plot(3, 2); led.plot(4, 2)
+        led.plotBrightness(0, 2, 255); led.plotBrightness(1, 2, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(3, 2, 60); led.plotBrightness(4, 2, 25)
     } else if (idx == 25) {
-        led.plot(0, 0); led.plot(1, 0); led.plot(2, 1); led.plot(3, 1); led.plot(4, 1)
+        led.plotBrightness(0, 0, 255); led.plotBrightness(1, 0, 170); led.plotBrightness(2, 1, 110); led.plotBrightness(3, 1, 60); led.plotBrightness(4, 1, 25)
     } else if (idx == 26) {
-        led.plot(0, 0); led.plot(1, 1); led.plot(2, 1); led.plot(3, 2); led.plot(4, 2)
+        led.plotBrightness(0, 0, 255); led.plotBrightness(1, 1, 170); led.plotBrightness(2, 1, 110); led.plotBrightness(3, 2, 60); led.plotBrightness(4, 2, 25)
     } else if (idx == 27) {
-        led.plot(0, 0); led.plot(1, 1); led.plot(2, 2); led.plot(3, 2); led.plot(4, 3)
+        led.plotBrightness(0, 0, 255); led.plotBrightness(1, 1, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(3, 2, 60); led.plotBrightness(4, 3, 25)
     } else if (idx == 28) {
-        led.plot(0, 0); led.plot(1, 1); led.plot(2, 2); led.plot(3, 3); led.plot(4, 4)
+        led.plotBrightness(0, 0, 255); led.plotBrightness(1, 1, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(3, 3, 60); led.plotBrightness(4, 4, 25)
     } else if (idx == 29) {
-        led.plot(1, 0); led.plot(2, 1); led.plot(2, 2); led.plot(3, 3); led.plot(4, 4)
+        led.plotBrightness(1, 0, 255); led.plotBrightness(2, 1, 170); led.plotBrightness(2, 2, 110); led.plotBrightness(3, 3, 60); led.plotBrightness(4, 4, 25)
     } else if (idx == 30) {
-        led.plot(2, 0); led.plot(2, 1); led.plot(3, 2); led.plot(3, 3); led.plot(4, 4)
+        led.plotBrightness(2, 0, 255); led.plotBrightness(2, 1, 170); led.plotBrightness(3, 2, 110); led.plotBrightness(3, 3, 60); led.plotBrightness(4, 4, 25)
     } else {
-        led.plot(3, 0); led.plot(3, 1); led.plot(3, 2); led.plot(4, 3); led.plot(4, 4)
+        led.plotBrightness(3, 0, 255); led.plotBrightness(3, 1, 170); led.plotBrightness(3, 2, 110); led.plotBrightness(4, 3, 60); led.plotBrightness(4, 4, 25)
     }
 })

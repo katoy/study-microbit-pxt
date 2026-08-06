@@ -6,7 +6,7 @@ async function captureDemoFrames() {
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage({ viewport: { width: 1280, height: 750 } });
 
-    console.log('Navigating to MakeCode editor for Compass Device Orientation Demo GIF...');
+    console.log('Navigating to MakeCode editor for Compass Pointer Dial Demo GIF...');
     await page.goto('https://makecode.microbit.org/#editor');
     await page.waitForTimeout(5000);
 
@@ -66,10 +66,11 @@ async function captureDemoFrames() {
         fs.mkdirSync(framesDir, { recursive: true });
     }
 
-    console.log(`Capturing ${angles.length} frames showing micro:bit orientation changes for compass...`);
+    console.log(`Capturing ${angles.length} frames showing compass pointer dial rotation...`);
 
     for (let i = 0; i < angles.length; i++) {
         const angle = angles[i];
+
         await page.evaluate((a) => {
             const iframes = Array.from(document.querySelectorAll('iframe'));
             iframes.forEach(iframe => {
@@ -80,29 +81,35 @@ async function captureDemoFrames() {
                         state: { compassHeading: a }
                     }, '*');
                 } catch (e) {}
-
-                try {
-                    const doc = iframe.contentDocument || iframe.contentWindow?.document;
-                    if (doc) {
-                        const board = doc.querySelector('svg#board') || doc.querySelector('.sim-board') || doc.querySelector('svg');
-                        if (board) {
-                            (board as HTMLElement).style.transform = `rotate(${-a}deg)`;
-                            (board as HTMLElement).style.transformOrigin = 'center 40%';
-                            (board as HTMLElement).style.transition = 'transform 0.1s linear';
-                        }
-                    }
-                } catch (e) {}
             });
         }, angle);
 
-        await page.waitForTimeout(300);
+        await page.waitForTimeout(150);
+
+        const childFrames = page.frames().filter(f => f.url().includes('sim'));
+        for (const frame of childFrames) {
+            try {
+                await frame.evaluate((a) => {
+                    const head = document.querySelector('.sim-head');
+                    if (head) {
+                        head.setAttribute('transform', `translate(250, 204) rotate(${a}) translate(-250, -204)`);
+                    }
+                    const txt = document.querySelector('.sim-text');
+                    if (txt) {
+                        txt.textContent = `${a}°`;
+                    }
+                }, angle);
+            } catch (e) {}
+        }
+
+        await page.waitForTimeout(100);
 
         const fileName = `frame_${String(i).padStart(2, '0')}.png`;
         await page.screenshot({ path: path.join(framesDir, fileName) });
     }
 
     await browser.close();
-    console.log('Successfully captured micro:bit orientation demo frames.');
+    console.log('Successfully captured compass pointer dial demo frames.');
 }
 
 captureDemoFrames().catch(console.error);

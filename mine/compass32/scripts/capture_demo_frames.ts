@@ -6,7 +6,7 @@ async function captureCompass32DemoFrames() {
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage({ viewport: { width: 1280, height: 750 } });
 
-    console.log('Navigating to MakeCode editor for Compass32 Device Orientation Demo GIF...');
+    console.log('Navigating to MakeCode editor for Compass32 Pointer Dial Demo GIF...');
     await page.goto('https://makecode.microbit.org/#editor');
     await page.waitForTimeout(5000);
 
@@ -39,7 +39,7 @@ async function captureCompass32DemoFrames() {
 
     await page.waitForTimeout(4000);
 
-    // 36 steps (every 10 degrees) for smooth rotation of the micro:bit device
+    // 36 steps around 360 degrees (every 10 degrees)
     const angles: number[] = [];
     for (let deg = 0; deg < 360; deg += 10) {
         angles.push(deg);
@@ -50,43 +50,48 @@ async function captureCompass32DemoFrames() {
         fs.mkdirSync(framesDir, { recursive: true });
     }
 
-    console.log(`Capturing ${angles.length} frames showing micro:bit device orientation changes...`);
+    console.log(`Capturing ${angles.length} frames showing pointer dial rotation around micro:bit...`);
 
     for (let i = 0; i < angles.length; i++) {
         const angle = angles[i];
-        await page.evaluate((a) => {
-            const iframes = Array.from(document.querySelectorAll('iframe'));
-            iframes.forEach(iframe => {
-                try {
-                    iframe.contentWindow?.postMessage({
-                        type: 'simulator',
-                        action: 'setstate',
-                        state: { compassHeading: a }
-                    }, '*');
-                } catch (e) {}
 
-                try {
-                    const doc = iframe.contentDocument || iframe.contentWindow?.document;
-                    if (doc) {
-                        const board = doc.querySelector('svg#board') || doc.querySelector('.sim-board') || doc.querySelector('svg');
-                        if (board) {
-                            (board as HTMLElement).style.transform = `rotate(${-a}deg)`;
-                            (board as HTMLElement).style.transformOrigin = 'center 40%';
-                            (board as HTMLElement).style.transition = 'transform 0.1s linear';
-                        }
+        const childFrame = page.frames().find(f => f.url().includes('simulator'));
+        if (childFrame) {
+            await childFrame.evaluate((a) => {
+                const win = window as any;
+                if (win.pxsim && win.pxsim.board()) {
+                    const board = win.pxsim.board();
+                    if (board.compassState) {
+                        board.compassState.heading = a;
                     }
-                } catch (e) {}
-            });
-        }, angle);
+                    if (typeof board.updateView === 'function') {
+                        board.updateView();
+                    }
+                }
+                const head = document.querySelector('.sim-head');
+                if (head) {
+                    head.setAttribute('transform', `translate(251, 75) rotate(${a}) translate(-251, -75)`);
+                }
+                const txt = document.querySelector('.sim-text');
+                if (txt) {
+                    txt.textContent = `${a}°`;
+                }
+            }, angle);
+        }
 
-        await page.waitForTimeout(300);
+        await page.waitForTimeout(100);
 
+        const simElement = page.locator('#simframe, .simframe, iframe[src*="sim"]').first();
         const fileName = `frame_${String(i).padStart(2, '0')}.png`;
-        await page.screenshot({ path: path.join(framesDir, fileName) });
+        if (await simElement.isVisible()) {
+            await simElement.screenshot({ path: path.join(framesDir, fileName) });
+        } else {
+            await page.screenshot({ path: path.join(framesDir, fileName) });
+        }
     }
 
     await browser.close();
-    console.log('Successfully captured micro:bit orientation demo frames.');
+    console.log('Successfully captured compass dial pointer demo frames.');
 }
 
 captureCompass32DemoFrames().catch(console.error);

@@ -36,7 +36,24 @@ async function captureCompass32Screenshots() {
         modals.forEach(m => m.remove());
     }, codeText);
 
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(5000);
+
+    const childFrame = page.frames().find(f => f.url().includes('simulator'));
+    if (childFrame) {
+        await childFrame.evaluate(() => {
+            const win = window as any;
+            if (win.pxsim && win.pxsim.board()) {
+                const board = win.pxsim.board();
+                if (board.compassState) {
+                    board.compassState.heading = 0;
+                }
+                if (typeof board.updateView === 'function') {
+                    board.updateView();
+                }
+            }
+        });
+    }
+    await page.waitForTimeout(1000);
 
     const targets = [
         { index: 0, angle: 0, label: '00_north_0deg' },
@@ -52,18 +69,29 @@ async function captureCompass32Screenshots() {
     }
 
     for (const t of targets) {
-        await page.evaluate((a) => {
-            const iframes = Array.from(document.querySelectorAll('iframe'));
-            iframes.forEach(iframe => {
-                try {
-                    iframe.contentWindow?.postMessage({
-                        type: 'simulator',
-                        action: 'setstate',
-                        state: { compassHeading: a }
-                    }, '*');
-                } catch (e) {}
-            });
-        }, t.angle);
+        const childFrame = page.frames().find(f => f.url().includes('simulator'));
+        if (childFrame) {
+            await childFrame.evaluate((a) => {
+                const win = window as any;
+                if (win.pxsim && win.pxsim.board()) {
+                    const board = win.pxsim.board();
+                    if (board.compassState) {
+                        board.compassState.heading = a;
+                    }
+                    if (typeof board.updateView === 'function') {
+                        board.updateView();
+                    }
+                }
+                const head = document.querySelector('.sim-head');
+                if (head) {
+                    head.setAttribute('transform', `translate(251, 75) rotate(${a}) translate(-251, -75)`);
+                }
+                const txt = document.querySelector('.sim-text');
+                if (txt) {
+                    txt.textContent = `${a}°`;
+                }
+            }, t.angle);
+        }
 
         await page.waitForTimeout(1000);
 

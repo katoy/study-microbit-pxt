@@ -24,9 +24,10 @@ function generateMainTsContent(): string {
     }
 
     let foreverIfElse = '';
+    const BRIGHTNESS = [255, 170, 110, 60, 25];
     for (let i = 0; i < 32; i++) {
         const points = DIRECTION_POINTS[i];
-        const plotStr = points.map(p => `led.plot(${p.x}, ${p.y})`).join('; ');
+        const plotStr = points.map((p, idx) => `led.plotBrightness(${p.x}, ${p.y}, ${BRIGHTNESS[idx]})`).join('; ');
 
         if (i === 0) {
             foreverIfElse += `    if (idx == 0) {\n        ${plotStr}\n`;
@@ -95,29 +96,51 @@ async function updateMainBlocks(mainTsPath: string, mainBlocksPath: string) {
         // Extract main.blocks XML from IndexedDB / PXT workspace if available
         const xml = await page.evaluate(async () => {
             return new Promise<string>((resolve) => {
-                const req = indexedDB.open('pxt-microbit');
-                req.onsuccess = (event: any) => {
-                    const db = event.target.result;
-                    if (!db.objectStoreNames.contains('headerstoheader')) {
-                        resolve('');
-                        return;
-                    }
-                    const tx = db.transaction(['headerstoheader'], 'readonly');
-                    const store = tx.objectStore('headerstoheader');
-                    const getAllReq = store.getAll();
-                    getAllReq.onsuccess = () => {
-                        const items = getAllReq.result || [];
-                        for (const item of items) {
-                            if (item && item.blob && item.blob['main.blocks']) {
-                                resolve(item.blob['main.blocks']);
-                                return;
-                            }
+                const dbNames = ['__pxt_idb_workspace_microbit_v9', 'pxt-microbit'];
+                let tried = 0;
+                for (const dbName of dbNames) {
+                    const req = indexedDB.open(dbName);
+                    req.onsuccess = (event: any) => {
+                        const db = event.target.result;
+                        if (db && db.objectStoreNames.contains('texts')) {
+                            const tx = db.transaction(['texts'], 'readonly');
+                            const store = tx.objectStore('texts');
+                            const getAllReq = store.getAll();
+                            getAllReq.onsuccess = () => {
+                                const items = getAllReq.result || [];
+                                for (const item of items) {
+                                    if (item && item.files && item.files['main.blocks']) {
+                                        resolve(item.files['main.blocks']);
+                                        return;
+                                    }
+                                }
+                                tried++;
+                                if (tried === dbNames.length) resolve('');
+                            };
+                            getAllReq.onerror = () => { tried++; if (tried === dbNames.length) resolve(''); };
+                        } else if (db && db.objectStoreNames.contains('headerstoheader')) {
+                            const tx = db.transaction(['headerstoheader'], 'readonly');
+                            const store = tx.objectStore('headerstoheader');
+                            const getAllReq = store.getAll();
+                            getAllReq.onsuccess = () => {
+                                const items = getAllReq.result || [];
+                                for (const item of items) {
+                                    if (item && item.blob && item.blob['main.blocks']) {
+                                        resolve(item.blob['main.blocks']);
+                                        return;
+                                    }
+                                }
+                                tried++;
+                                if (tried === dbNames.length) resolve('');
+                            };
+                            getAllReq.onerror = () => { tried++; if (tried === dbNames.length) resolve(''); };
+                        } else {
+                            tried++;
+                            if (tried === dbNames.length) resolve('');
                         }
-                        resolve('');
                     };
-                    getAllReq.onerror = () => resolve('');
-                };
-                req.onerror = () => resolve('');
+                    req.onerror = () => { tried++; if (tried === dbNames.length) resolve(''); };
+                }
             });
         });
 
