@@ -1,0 +1,6 @@
+{
+  "entry": "src/app.ts",
+  "excludePatterns": [
+    "enum\\s+ArrowNames\\s*\\{[\\s\\S]*?\\}"
+  ]
+}

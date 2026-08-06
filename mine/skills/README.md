@@ -35,6 +35,11 @@
   - **起動プロンプト例**:
     - **簡素な例**: 「`main.py` を MakeCode に取り込んで」
     - **詳細な例**: 「ローカルの `main.py` を MakeCode Web エディタの Monaco エディタに流し込み、エラーなくブロック表示に変換できるか確認して」
+- [`microbit-pxt-sync`](microbit-pxt-sync/SKILL.md)
+  - `src/*` 配下のモジュールとエントリーコード（`src/app.ts`）をマージして `main.ts` を自動生成し、Playwright ブラウザ自動操作を用いて MakeCode エディタへ注入・コンパイル、IndexedDB よりビジュアルブロック定義 XML (`main.blocks`) を自動抽出・保存したのち、`pxt build` により実機用バイナリ `.hex` を再構築する同期スキル。
+  - **起動プロンプト例**:
+    - **簡素な例**: 「`src/*` のロジックと `main.ts` を同期してビルドして」
+    - **詳細な例**: 「`src/` 配下のロジックコードに変更があったため、`microbit-pxt-sync` スキルを実行し、`main.ts`、`main.blocks`、および `built/binary.hex` を一括で最新状態に更新して」
 - [`microbit-sim-tester`](microbit-sim-tester/SKILL.md)
   - Playwright を活用し、MakeCode Web エディタ上のシミュレータでボタン（A/B/A+B）押下や加速度・傾きセンサー等のイベント発火をエミュレートし、5x5 LED マトリクスの表示結果をスクリーンショット撮影して検証するスキル。
   - **起動プロンプト例**:
