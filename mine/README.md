@@ -61,6 +61,10 @@ mine/
 │   ├── main.ts                <-- 自動生成メインプログラムコード
 │   ├── src/compass.ts         <-- 8方向判定ロジック関数 (配列による探索アルゴリズム)
 │   └── README.md              <-- プロジェクト個別の詳細ドキュメント
+├── compass-degit/             <-- 方位磁石そろばん表示アプリケーション (時計回り/反時計回りのずれ角度をそろばん形式で表示、SSOT自動同期)
+│   ├── main.ts                <-- 自動生成メインプログラムコード
+│   ├── src/compass.ts         <-- そろばん変換・符号計算ロジック
+│   └── README.md              <-- プロジェクト個別の詳細ドキュメント
 ├── compass32/                  <-- 32方向高精度方位磁石アプリケーション (Single Source of Truth 自動同期)
 │   ├── main.ts                <-- 自動生成メインプログラムコード
 │   ├── src/compass32.ts       <-- 32方向判定ロジック & 描画データ (Single Source of Truth)
@@ -179,7 +183,7 @@ npx pxt build
 
 各プロジェクトにはテスト環境が統合されており、ローカルで実行可能です。
 
-### A. TypeScript版 (hello-microbit / compass / compass-array / compass32)
+### A. TypeScript版 (hello-microbit / compass / compass-array / compass32 / compass-degit)
 
 #### 1. hello-microbit
 TypeScript版には、3種類のテスト環境（PXT標準テスト、Playwright E2Eシミュレータテスト、Jestコードカバレッジテスト）が統合されています。
@@ -211,19 +215,19 @@ TypeScript版には、3種類のテスト環境（PXT標準テスト、Playwrigh
   ```
   実行後、ターミナル上にカバレッジ結果が出力されるほか、`coverage/index.html` に詳細な **HTML カバレッジレポート** が出力されます。
 
-#### 2. compass / compass-array / compass32 (自動同期対応 TypeScript プロジェクト)
+#### 2. compass / compass-array / compass32 / compass-degit (自動同期対応 TypeScript プロジェクト)
 これらのプロジェクトは `microbit-pxt-sync` スキルを利用した **Single Source of Truth (SSOT) 自動同期** に対応しており、`Vitest` と `Playwright`、さらに一部は `ESLint` や画像自動生成スクリプトが統合されています。
 
 - **自動同期 & ユニットテスト実行 (Vitest)**
   `src/` 配下の変更を検知して同期スクリプトを走らせた後、Vitest で分岐網羅テストおよびカバレッジ測定を実行します。
   ```bash
-  cd compass        # または compass-array, compass32
+  cd compass        # または compass-array, compass32, compass-degit
   npm test
   ```
 - **Playwright E2E シミュレータテスト**
   Playwright を用いて MakeCode Web シミュレータ上で実際の表示テストを実行します。
   ```bash
-  cd compass        # または compass-array, compass32
+  cd compass        # または compass-array, compass32, compass-degit
   npm run test:e2e
   ```
 - **コード品質チェック (ESLint) (compass-array / compass32 のみ)**
@@ -231,10 +235,10 @@ TypeScript版には、3種類のテスト環境（PXT標準テスト、Playwrigh
   cd compass32      # または compass-array
   npm run lint
   ```
-- **代表方位パターンの画像・デモGIF自動生成 (compass / compass-array)**
-  MakeCode シミュレータを Playwright で自動操作し、LED 画面のスクリーンショットや 8 方向回転デモ GIF アニメーションを再生成します。
+- **代表方位パターンの画像・デモGIF自動生成 (compass / compass-array / compass-degit)**
+  MakeCode シミュレータを Playwright で自動操作し、LED 画面のスクリーンショットや方位回転デモ GIF アニメーションを再生成します。
   ```bash
-  cd compass        # または compass-array
+  cd compass        # または compass-array, compass-degit
   # スクショ撮影
   npm run screenshots
   # デモGIF生成
