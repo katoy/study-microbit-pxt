@@ -53,14 +53,14 @@ mine/
 │   ├── test.sh                <-- 静的解析とテストを一括実行するスクリプト
 │   ├── requirements.txt       <-- 依存ライブラリの定義ファイル
 │   └── README.md              <-- プロジェクト個別の詳細ドキュメント
-├── snake/                     <-- スネークゲームサンプル (Python / MakeCode Python)
-│   ├── main.py                <-- メインプログラムコード (Python)
-│   ├── main_makecode.py       <-- MakeCode 用調整済み Python コード
-│   └── README.md              <-- サンプルの説明ドキュメント
 ├── compass/                    <-- 8方向方位磁石アプリケーション (TypeScript / PXT)
 │   ├── main.ts                <-- メインプログラムコード
 │   ├── src/compass.ts         <-- 8方向判定ロジック
 │   └── README.md              <-- 方位磁石プロジェクトの詳細ドキュメント
+├── compass-array/             <-- 配列を用いた8方向方位磁石アプリケーション (Single Source of Truth 自動同期)
+│   ├── main.ts                <-- 自動生成メインプログラムコード
+│   ├── src/compass.ts         <-- 8方向判定ロジック関数 (配列による探索アルゴリズム)
+│   └── README.md              <-- プロジェクト個別の詳細ドキュメント
 ├── compass32/                  <-- 32方向高精度方位磁石アプリケーション (Single Source of Truth 自動同期)
 │   ├── main.ts                <-- 自動生成メインプログラムコード
 │   ├── src/compass32.ts       <-- 32方向判定ロジック & 描画データ (Single Source of Truth)
@@ -69,10 +69,18 @@ mine/
 │   ├── main.js                <-- JavaScript 単体テスト・シミュレート用コード
 │   ├── main_makecode.js       <-- MakeCode JavaScript 用コード (MakeCode エディタ互換)
 │   └── README.md              <-- サンプルの説明ドキュメント
+├── docs/                      <-- プロジェクトやコードの各種レビューレポートが格納されるディレクトリ
+│   ├── compass_review.md
+│   ├── hello_microbit_review.md
+│   ├── invader_review.md
+│   ├── project_infrastructure_review.md
+│   └── review_report.md
 ├── skills/                    <-- AI Agent 用カスタムスキル定義
 │   ├── microbit-block-reviewer/  <-- MakeCode ブロック互換性・非対応構文の自動レビュー
 │   ├── microbit-build-and-open/ <-- MakeCode ビルド & エディタ起動・インポート自動化
+│   ├── microbit-generate-blocks/ <-- TypeScript から MakeCode ブロック XML への変換・抽出自動化
 │   ├── microbit-import-python/  <-- Python コードの MakeCode インポート・変換自動化
+│   ├── microbit-pxt-sync/        <-- `src/*` と `main.ts`, `main.blocks`, `.hex` を一括同期・自動ビルド
 │   ├── microbit-sim-tester/     <-- シミュレータ自動動作検証（ボタン/センサー操作 & 5x5 LED 撮影）
 │   ├── setup.sh               <-- スキルを Agent 共有フォルダにセットアップするスクリプト
 │   ├── cleanup.sh             <-- スキルのセットアップを取り消すスクリプト
@@ -171,53 +179,67 @@ npx pxt build
 
 各プロジェクトにはテスト環境が統合されており、ローカルで実行可能です。
 
-### A. TypeScript版 (hello-microbit)
+### A. TypeScript版 (hello-microbit / compass / compass-array / compass32)
 
+#### 1. hello-microbit
 TypeScript版には、3種類のテスト環境（PXT標準テスト、Playwright E2Eシミュレータテスト、Jestコードカバレッジテスト）が統合されています。
 
-#### 1. 全てのテストを一括実行（推奨）
-
-以下のいずれかのコマンドを実行すると、「PXT標準テスト ➔ ビルド ➔ E2Eテスト ➔ カバレッジ計測」が順番に自動実行されます。
-
-```bash
-cd hello-microbit
-
-# npm スクリプト経由
-npm test
-
-# または、シェルスクリプト経由
-./test.sh
-```
-
-#### 2. 個別テストの実行
-
+- **全てのテストを一括実行（推奨）**
+  ```bash
+  cd hello-microbit
+  npm test
+  # または
+  ./test.sh
+  ```
 - **PXT 標準ユニットテスト**
   `tests/test.ts` に記述された PXT の挙動・ロジックテストを実行します。
   ```bash
   cd hello-microbit
   npm run test:pxt
-  # または
-  npx pxt test
   ```
-
 - **Playwright E2E シミュレータテスト**
-  Playwright を使用してブラウザ上の MakeCode シミュレータにビルドした hex ファイルをロードし、実際にボタンクリックやシェイクなどのイベントを発生させて LED の点灯パターンの振る舞いを検証するテストです。
+  Playwright を使用してブラウザ上の MakeCode シミュレータにビルドした hex ファイルをロードし、実際にボタンクリックやシェイクなどのイベントを発生させて LED の点灯パターンを検証するテストです。
   ```bash
   cd hello-microbit
   npm run test:e2e
-  # または
-  npx playwright test
   ```
-
 - **Jest コードカバレッジ計測テスト**
   micro:bit の各 API をモックし、`main.ts` に対する C0/C1 カバレッジを Jest で測定します。
   ```bash
   cd hello-microbit
   npm run test:cov
-  # または
-  npx jest
   ```
   実行後、ターミナル上にカバレッジ結果が出力されるほか、`coverage/index.html` に詳細な **HTML カバレッジレポート** が出力されます。
+
+#### 2. compass / compass-array / compass32 (自動同期対応 TypeScript プロジェクト)
+これらのプロジェクトは `microbit-pxt-sync` スキルを利用した **Single Source of Truth (SSOT) 自動同期** に対応しており、`Vitest` と `Playwright`、さらに一部は `ESLint` や画像自動生成スクリプトが統合されています。
+
+- **自動同期 & ユニットテスト実行 (Vitest)**
+  `src/` 配下の変更を検知して同期スクリプトを走らせた後、Vitest で分岐網羅テストおよびカバレッジ測定を実行します。
+  ```bash
+  cd compass        # または compass-array, compass32
+  npm test
+  ```
+- **Playwright E2E シミュレータテスト**
+  Playwright を用いて MakeCode Web シミュレータ上で実際の表示テストを実行します。
+  ```bash
+  cd compass        # または compass-array, compass32
+  npm run test:e2e
+  ```
+- **コード品質チェック (ESLint) (compass32 のみ)**
+  ```bash
+  cd compass32
+  npm run lint
+  ```
+- **代表方位パターンの画像・デモGIF自動生成 (compass / compass-array)**
+  MakeCode シミュレータを Playwright で自動操作し、LED 画面のスクリーンショットや 8 方向回転デモ GIF アニメーションを再生成します。
+  ```bash
+  cd compass        # または compass-array
+  # スクショ撮影
+  npm run screenshots
+  # デモGIF生成
+  npm run screenshots:gif
+  ```
 
 ### B. Python版 (hello-microbit-python)
 
@@ -288,7 +310,9 @@ cd hello-microbit-python
 
 - [`microbit-block-reviewer`](skills/microbit-block-reviewer/SKILL.md): Python / TypeScript コードの MakeCode ブロックエディタ互換性レビューおよび構文検証。
 - [`microbit-build-and-open`](skills/microbit-build-and-open/SKILL.md): ローカルビルドおよび `.hex` ファイルの MakeCode デスクトップアプリ/ブラウザへの自動ロード。
+- [`microbit-generate-blocks`](skills/microbit-generate-blocks/SKILL.md): Playwright 自動操作を用いた TypeScript からのブロック定義 XML (`main.blocks`) 自動抽出・保存。
 - [`microbit-import-python`](skills/microbit-import-python/SKILL.md): Python コードの MakeCode エディタへの自動インポートおよびブロック変換の自動操作。
+- [`microbit-pxt-sync`](skills/microbit-pxt-sync/SKILL.md): `src/*` の TypeScript コードと `main.ts`, `main.blocks`, `.hex` を一括で自動同期・マージ・ビルドする同期スキル。
 - [`microbit-sim-tester`](skills/microbit-sim-tester/SKILL.md): Playwright を活用した MakeCode シミュレータ上でのボタン(A/B/A+B)操作・センサーイベント発火および 5x5 LED 表示スクショ自動検証。
 
 ### スキルのセットアップ
