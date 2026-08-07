@@ -8,4 +8,5 @@ basic.forever(function () {
         let p = points[i]
         led.plotBrightness(p.x, p.y, BRIGHTNESS[i])
     }
+    basic.pause(50)
 })

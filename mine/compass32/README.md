@@ -102,6 +102,13 @@ compass32/
 npm install
 ```
 
+さらに、ローカルビルド環境の初期化のために以下を実行します：
+
+```bash
+npx pxt target microbit
+npx pxt install
+```
+
 ### 2. ローカル開発サーバーの起動
 
 MakeCode のブロックエディタをローカルで起動して開発・確認を行えます。起動前に自動的にコード同期が検証されます。

@@ -61,7 +61,7 @@ async function inspectCompassUI() {
             return elements.map(el => ({
                 tagName: el.tagName,
                 id: el.id,
-                className: typeof el.className === 'string' ? el.className : el.className?.baseVal || '',
+                className: typeof (el as any).className === 'string' ? (el as any).className : (el as any).className?.baseVal || '',
                 transform: el.getAttribute('transform'),
                 fill: el.getAttribute('fill'),
                 stroke: el.getAttribute('stroke'),

@@ -12,6 +12,7 @@
     "pxt_modules",
     "built",
     "node_modules",
-    "main.ts"
+    "main.ts",
+    "src/app.ts"
   ]
 }
