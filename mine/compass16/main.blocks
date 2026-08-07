@@ -1,0 +1,49 @@
+<xml xmlns="https://developers.google.com/blockly/xml"><variables><variable id="ZXC~31s`WA(H(k{Fg]X)">normalized</variable><variable id="uUD:fnkHRKB4+ifc)?dT">degrees</variable><variable id="8sD(}9o]}4-pDQ_ZIeRv">index</variable><variable id="Hs;#,U~2=BN!nh#V-w#/">arrows_array</variable></variables><block type="pxt-on-start" x="20" y="20"><statement name="HANDLER"><block type="variables_set"><field name="VAR" id="Hs;#,U~2=BN!nh#V-w#/">arrows_array</field><comment pinned="false" h="80" w="160">Automatically generated. Do not edit directly.</comment><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="lists_create_with" inline="false"><mutation items="16" horizontalafter="3"></mutation><value name="ADD0"><block type="builtin_arrow_image"><field name="i">ArrowNames.North</field></block></value><value name="ADD1"><block type="device_build_image"><field name="LEDS">`
+        # # # . . 
+        # # . . . 
+        # . # . . 
+        . . . # . 
+        . . . # .
+        `</field></block></value><value name="ADD2"><block type="builtin_arrow_image"><field name="i">ArrowNames.NorthWest</field></block></value><value name="ADD3"><block type="device_build_image"><field name="LEDS">`
+        # # # . . 
+        # # . . . 
+        # . # . . 
+        . . . # # 
+        . . . . .
+        `</field></block></value><value name="ADD4"><block type="builtin_arrow_image"><field name="i">ArrowNames.West</field></block></value><value name="ADD5"><block type="device_build_image"><field name="LEDS">`
+        . . . . . 
+        . . . # # 
+        # . # . . 
+        # # . . . 
+        # # # . .
+        `</field></block></value><value name="ADD6"><block type="builtin_arrow_image"><field name="i">ArrowNames.SouthWest</field></block></value><value name="ADD7"><block type="device_build_image"><field name="LEDS">`
+        . . . # . 
+        . . . # . 
+        # . # . . 
+        # # . . . 
+        # # # . .
+        `</field></block></value><value name="ADD8"><block type="builtin_arrow_image"><field name="i">ArrowNames.South</field></block></value><value name="ADD9"><block type="device_build_image"><field name="LEDS">`
+        . # . . . 
+        . # . . . 
+        . . # . # 
+        . . . # # 
+        . . # # #
+        `</field></block></value><value name="ADD10"><block type="builtin_arrow_image"><field name="i">ArrowNames.SouthEast</field></block></value><value name="ADD11"><block type="device_build_image"><field name="LEDS">`
+        . . . . . 
+        # # . . . 
+        . . # . # 
+        . . . # # 
+        . . # # #
+        `</field></block></value><value name="ADD12"><block type="builtin_arrow_image"><field name="i">ArrowNames.East</field></block></value><value name="ADD13"><block type="device_build_image"><field name="LEDS">`
+        . . # # # 
+        . . . # # 
+        . . # . # 
+        # # . . . 
+        . . . . .
+        `</field></block></value><value name="ADD14"><block type="builtin_arrow_image"><field name="i">ArrowNames.NorthEast</field></block></value><value name="ADD15"><block type="device_build_image"><field name="LEDS">`
+        . . # # # 
+        . . . # # 
+        . . # . # 
+        . # . . . 
+        . # . . .
+        `</field></block></value></block></value></block></statement></block><block type="device_forever" x="672" y="20"><statement name="HANDLER"><block type="variables_set"><field name="VAR" id="uUD:fnkHRKB4+ifc)?dT">degrees</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="device_heading"></block></value><next><block type="variables_set"><field name="VAR" id="8sD(}9o]}4-pDQ_ZIeRv">index</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="function_call_output"><mutation name="getDirectionIndex" functionid="z9^C@95P~5nEjA+FP8}2"><arg name="degrees" id="c2gz5yzi2rxgb9q7q6mu" type="number"></arg></mutation><value name="c2gz5yzi2rxgb9q7q6mu"><shadow type="math_number"><field name="NUM">1</field></shadow><block type="variables_get"><field name="VAR" id="uUD:fnkHRKB4+ifc)?dT">degrees</field></block></value></block></value><next><block type="device_show_image_offset"><mutation xmlns="http://www.w3.org/1999/xhtml" _expanded="0" _input_init="true"></mutation><value name="sprite"><block type="lists_index_get"><value name="LIST"><block type="variables_get"><field name="VAR" id="Hs;#,U~2=BN!nh#V-w#/">arrows_array</field></block></value><value name="INDEX"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="variables_get"><field name="VAR" id="8sD(}9o]}4-pDQ_ZIeRv">index</field></block></value></block></value><value name="offset"><shadow type="math_number"><field name="NUM">0</field></shadow></value><next><block type="device_pause"><value name="pause"><shadow type="timePicker"><field name="ms">100</field></shadow></value></block></next></block></next></block></next></block></statement></block><block type="function_definition" x="1418" y="20"><mutation name="getDirectionIndex" functionid="z9^C@95P~5nEjA+FP8}2"><arg name="degrees" id="c2gz5yzi2rxgb9q7q6mu" type="number"></arg></mutation><field name="function_name">getDirectionIndex</field><value name="c2gz5yzi2rxgb9q7q6mu"><block type="argument_reporter_number" deletable="false"><field name="VALUE">degrees</field></block></value><statement name="STACK"><block type="variables_set"><field name="VAR" id="ZXC~31s`WA(H(k{Fg]X)">normalized</field><comment pinned="false" h="80" w="160">角度を [0, 360) の範囲に正規化（負の角度や 360度以上の値にも対応）</comment><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="math_modulo"><value name="DIVIDEND"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="math_arithmetic"><field name="OP">ADD</field><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="math_modulo"><value name="DIVIDEND"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="argument_reporter_number"><field name="VALUE">degrees</field></block></value><value name="DIVISOR"><shadow type="math_number"><field name="NUM">360</field></shadow></value></block></value><value name="B"><shadow type="math_number"><field name="NUM">360</field></shadow></value></block></value><value name="DIVISOR"><shadow type="math_number"><field name="NUM">360</field></shadow></value></block></value><next><block type="function_return"><mutation xmlns="http://www.w3.org/1999/xhtml" no_return_value="false"></mutation><comment pinned="false" h="80" w="160">22.5度刻みで四捨五入し、16等分したインデックスを求める</comment><value name="RETURN_VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="math_modulo"><value name="DIVIDEND"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="math_js_round"><field name="OP">round</field><value name="ARG0"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="math_arithmetic"><field name="OP">DIVIDE</field><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="variables_get"><field name="VAR" id="ZXC~31s`WA(H(k{Fg]X)">normalized</field></block></value><value name="B"><shadow type="math_number"><field name="NUM">22.5</field></shadow></value></block></value></block></value><value name="DIVISOR"><shadow type="math_number"><field name="NUM">16</field></shadow></value></block></value></block></next></block></statement></block></xml>
