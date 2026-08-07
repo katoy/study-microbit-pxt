@@ -2,7 +2,7 @@ const BRIGHTNESS = [255, 170, 110, 60, 25]
 
 basic.forever(function () {
     let degrees = input.compassHeading()
-    let points = getDirectionPoints(degrees)
+    let points = getDirectionPoints(360 - degrees)
     basic.clearScreen()
     for (let i = 0; i < points.length; i++) {
         let p = points[i]
