@@ -10,9 +10,11 @@
 
 | プロジェクト名 | 主な言語 | ブロック互換性ステータス | レビュー詳細リンク |
 | :--- | :--- | :--- | :--- |
-| **compass** | TypeScript | **PASS** (完全互換) | [詳細を見る](file:///Users/katoy/github/study-microbit-pxt/mine/docs/compass_review.md) |
-| **compass-array** | TypeScript | **PASS** (完全互換 - 対処済み) | [詳細を見る](file:///Users/katoy/github/study-microbit-pxt/mine/docs/compass_review.md) |
-| **compass32** | TypeScript | **PASS** (表示・可読性に課題 / テキストエディタ推奨) | [詳細を見る](file:///Users/katoy/github/study-microbit-pxt/mine/docs/compass_review.md) |
+| **compass** | TypeScript | **PASS** (完全互換) | [詳細を見る](file:///Users/katoy/github/study-microbit-pxt/mine/docs/compass_review.md#1-compass) |
+| **compass-array** | TypeScript | **PASS** (完全互換 - 対処済み) | [詳細を見る](file:///Users/katoy/github/study-microbit-pxt/mine/docs/compass_review.md#2-compass-array) |
+| **compass32** | TypeScript | **PASS** (表示・可読性に課題 / テキストエディタ推奨) | [詳細を見る](file:///Users/katoy/github/study-microbit-pxt/mine/docs/compass_review.md#3-compass32) |
+| **compass16** | TypeScript | **PASS** (完全互換 - 対処済み) | [詳細を見る](file:///Users/katoy/github/study-microbit-pxt/mine/docs/compass_review.md#4-compass16) |
+| **compass-degit** | TypeScript | **PASS** (完全互換 - 対処済み) | [詳細を見る](file:///Users/katoy/github/study-microbit-pxt/mine/docs/compass_review.md#5-compass-degit) |
 | **hello-microbit** | TypeScript | **PASS** (完全互換) | [詳細を見る](file:///Users/katoy/github/study-microbit-pxt/mine/docs/hello_microbit_review.md) |
 | **hello-microbit-python** | Python | **PASS** (完全互換 - 対処済み) | [詳細を見る](file:///Users/katoy/github/study-microbit-pxt/mine/docs/hello_microbit_review.md) |
 | **invader** | JS / TS | **PASS** (完全互換 - 対処済み) | [詳細を見る](file:///Users/katoy/github/study-microbit-pxt/mine/docs/invader_review.md) |
@@ -34,7 +36,7 @@
 
 ## 🛠️ 各プロジェクトの個別レビュー
 
-- [コンパス系プロジェクトのレビュー (`compass`, `compass-array`, `compass32`)](file:///Users/katoy/github/study-microbit-pxt/mine/docs/compass_review.md)
+- [コンパス系プロジェクトのレビュー (`compass`, `compass-array`, `compass32`, `compass16`, `compass-degit`)](file:///Users/katoy/github/study-microbit-pxt/mine/docs/compass_review.md)
 - [Hello Microbit系プロジェクトのレビューとテスト分析 (`hello-microbit`, `hello-microbit-python`)](file:///Users/katoy/github/study-microbit-pxt/mine/docs/hello_microbit_review.md)
 - [インベーダーゲームのレビューとテスト分析 (`invader`)](file:///Users/katoy/github/study-microbit-pxt/mine/docs/invader_review.md)
 - [共通開発インフラとテスト自動化アーキテクチャのレビュー (`clean.sh`, `skills/`)](file:///Users/katoy/github/study-microbit-pxt/mine/docs/project_infrastructure_review.md)

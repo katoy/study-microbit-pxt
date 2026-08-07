@@ -1,21 +1,21 @@
 basic.forever(function () {
-    // 0〜359 の方位角を取得
     let heading = input.compassHeading()
+    let offset = getHeadingOffset(heading)
     
-    // 表示用 5x5 LED マトリクスの状態を取得
-    let leds = getCompassLeds(heading)
+    // 負数かどうかの判定
+    let isNegative = offset < 0
+    let absValue = Math.abs(offset)
     
-    // LEDマトリクスに描画
-    for (let x = 0; x < 5; x++) {
-        for (let y = 0; y < 5; y++) {
-            if (leds[x][y]) {
-                led.plot(x, y)
-            } else {
-                led.unplot(x, y)
-            }
-        }
-    }
+    // 3桁の各数字を取得
+    let hundreds = Math.floor(absValue / 100) % 10
+    let tens = Math.floor((absValue % 100) / 10) % 10
+    let ones = absValue % 10
     
-    // 表示のちらつき防止、及びCPUの負荷軽減のために少しウェイトを入れる
+    // LEDに直接描画
+    plotSign(isNegative)
+    plotSorobanColumn(2, hundreds)
+    plotSorobanColumn(3, tens)
+    plotSorobanColumn(4, ones)
+    
     basic.pause(150)
 })

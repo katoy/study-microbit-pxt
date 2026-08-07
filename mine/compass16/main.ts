@@ -1,5 +1,8 @@
 // Automatically generated. Do not edit directly.
-const arrows_array = [
+let arrows_array: Image[] = [];
+
+// 起動時に配列を初期化
+arrows_array = [
     // 0: N (北)
     images.arrowImage(ArrowNames.North),
     // 1: NNW (北北西)

@@ -1,81 +1,59 @@
 /**
- * 0〜359の方位角から、北(0度)からの最小のずれの角度と符号を計算します。
- * 東回りは '+', 西回りは '-'
+ * 0〜359の方位角から、北(0度)からの最小のずれの角度（-180〜+180）を計算します。
+ * 東回りは正の値、西回りは負の値。
  */
-export function calculateHeadingOffset(heading: number): { sign: string, value: number } {
-    // 0〜359の範囲に正規化
+export function getHeadingOffset(heading: number): number {
     let normalized = ((heading % 360) + 360) % 360;
-
     if (normalized <= 180) {
-        return { sign: "+", value: Math.round(normalized) };
+        return Math.round(normalized);
     } else {
-        return { sign: "-", value: Math.round(360 - normalized) };
+        return -Math.round(360 - normalized);
     }
 }
 
 /**
- * 数字（0〜9）をそろばん形式のLED列（長さ5のboolean配列）に変換します。
- * Y=0 (五玉): N >= 5 で点灯
- * Y=1..4 (一玉): N%5 >= y で点灯
+ * マイナス符号を表示（X=0, 1列目）
  */
-export function getSorobanColumn(digit: number): boolean[] {
-    const col: boolean[] = [];
+export function plotSign(isNegative: boolean): void {
+    if (isNegative) {
+        for (let x = 0; x < 2; x++) {
+            for (let y = 0; y < 5; y++) {
+                if (y === 2) {
+                    led.plot(x, y);
+                } else {
+                    led.unplot(x, y);
+                }
+            }
+        }
+    } else {
+        for (let x = 0; x < 2; x++) {
+            for (let y = 0; y < 5; y++) {
+                led.unplot(x, y);
+            }
+        }
+    }
+}
+
+/**
+ * 指定した列(X)に数値をそろばん形式で描画します。
+ */
+export function plotSorobanColumn(x: number, digit: number): void {
     const val = Math.max(0, Math.min(9, Math.floor(digit)));
     
-    // Y=0: 五玉 (0 or 5)
-    col.push(val >= 5);
+    // Y=0: 五玉 (5以上なら点灯)
+    if (val >= 5) {
+        led.plot(x, 0);
+    } else {
+        led.unplot(x, 0);
+    }
     
     // Y=1..4: 一玉 (0..4)
     const ones = val % 5;
     for (let y = 1; y <= 4; y++) {
-        col.push(ones >= y);
+        if (ones >= y) {
+            led.plot(x, y);
+        } else {
+            led.unplot(x, y);
+        }
     }
-    
-    return col;
-}
-
-export function getSignColumns(sign: string): boolean[][] {
-    const col0: boolean[] = [false, false, false, false, false];
-    const col1: boolean[] = [false, false, false, false, false];
-    
-    if (sign === "+") {
-        // プラス符号は左2列のどのLEDも点灯させない
-    } else if (sign === "-") {
-        col0[2] = true;
-        
-        col1[2] = true;
-    }
-    
-    return [col0, col1];
-}
-
-/**
- * 0〜359の方位角から、5x5 LEDマトリクスに表示する状態（boolean[5][5]）を生成します。
- * 戻り値の配列：leds[x][y] （x: 0..4, y: 0..4）
- */
-export function getCompassLeds(heading: number): boolean[][] {
-    const { sign, value } = calculateHeadingOffset(heading);
-    
-    // 3桁の数字に分解 (000〜180)
-    const hundreds = Math.floor(value / 100) % 10;
-    const tens = Math.floor((value % 100) / 10) % 10;
-    const ones = value % 10;
-    
-    const leds: boolean[][] = [];
-    
-    // X=0, 1: 符号
-    const signCols = getSignColumns(sign);
-    leds.push(signCols[0]);
-    leds.push(signCols[1]);
-    
-    // X=2: 百の位
-    leds.push(getSorobanColumn(hundreds));
-    
-    // X=3: 十の位
-    leds.push(getSorobanColumn(tens));
-    
-    // X=4: 一の位
-    leds.push(getSorobanColumn(ones));
-    
-    return leds;
 }
