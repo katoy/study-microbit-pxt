@@ -32,7 +32,10 @@ micro:bit で動く 8 方向方位磁石（コンパス）アプリケーショ�
 
 ## <a id="specification"></a>🧭 仕様・8方向判定ロジック
 
-`input.compassHeading()` で取得した角度（`0` 〜 `359`）から、以下の 8 方向の矢印を出力します。
+本アプリケーションは、デバイスがどの方向を向いていても **常に「物理的な北」を指し示す** 本物のコンパス（方位磁石）として動作します。
+`input.compassHeading()` で取得したデバイスの角度（`degrees`: `0` 〜 `359`）から、北の方角の相対角度（`northHeading = (360 - degrees) % 360`）を算出し、以下の 8 方向の矢印を出力します。
+
+### 北の相対角度（`northHeading`）の判定基準
 
 | 角度範囲 (deg) | 方角 | 表示矢印アイコン (`ArrowNames`) |
 |---|---|---|
@@ -49,17 +52,17 @@ micro:bit で動く 8 方向方位磁石（コンパス）アプリケーショ�
 
 ## <a id="display-patterns"></a>📸 8方向矢印表示パターン
 
-micro:bit の LED マトリクスに表示される 8 方向の矢印アイコンパターン一覧です。
+デバイス（micro:bit）の向きに応じた、LED マトリクス上の矢印表示パターン（北を指す方向）の一覧です。
 
-| 北 (0°) | 北東 (45°) | 東 (90°) | 南東 (135°) |
+| デバイスの向き: 北 (0°) | デバイスの向き: 北東 (45°) | デバイスの向き: 東 (90°) | デバイスの向き: 南東 (135°) |
 |:---:|:---:|:---:|:---:|
 | ![North](screenshots/00_north_0deg.png) | ![NorthEast](screenshots/01_northeast_45deg.png) | ![East](screenshots/02_east_90deg.png) | ![SouthEast](screenshots/03_southeast_135deg.png) |
-| `ArrowNames.North` | `ArrowNames.NorthEast` | `ArrowNames.East` | `ArrowNames.SouthEast` |
+| 指す方角: **北** (`ArrowNames.North`) | 指す方角: **北西** (`ArrowNames.NorthWest`) | 指す方角: **西** (`ArrowNames.West`) | 指す方角: **南西** (`ArrowNames.SouthWest`) |
 
-| 南 (180°) | 南西 (225°) | 西 (270°) | 北西 (315°) |
+| デバイスの向き: 南 (180°) | デバイスの向き: 南西 (225°) | デバイスの向き: 西 (270°) | デバイスの向き: 北西 (315°) |
 |:---:|:---:|:---:|:---:|
 | ![South](screenshots/04_south_180deg.png) | ![SouthWest](screenshots/05_southwest_225deg.png) | ![West](screenshots/06_west_270deg.png) | ![NorthWest](screenshots/07_northwest_315deg.png) |
-| `ArrowNames.South` | `ArrowNames.SouthWest` | `ArrowNames.West` | `ArrowNames.NorthWest` |
+| 指す方角: **南** (`ArrowNames.South`) | 指す方角: **南東** (`ArrowNames.SouthEast`) | 指す方角: **東** (`ArrowNames.East`) | 指す方角: **北東** (`ArrowNames.NorthEast`) |
 
 ---
 
