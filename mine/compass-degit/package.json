@@ -1,0 +1,28 @@
+{
+  "name": "compass-degit",
+  "version": "1.0.0",
+  "scripts": {
+    "sync": "tsx ../skills/microbit-pxt-sync/scripts/sync-tool.ts",
+    "screenshots": "tsx scripts/capture_screenshots.ts",
+    "screenshots:gif": "tsx scripts/capture_demo_frames.ts && magick -delay 20 -loop 0 screenshots/frames/frame_*.png screenshots/demo.gif",
+    "pretest": "npm run sync",
+    "pretest:unit": "npm run sync",
+    "pretest:e2e": "npm run sync",
+    "build": "npm run sync && pxt build",
+    "serve": "npm run sync && pxt serve",
+    "test": "vitest run --coverage",
+    "test:unit": "vitest run test/unit",
+    "test:e2e": "playwright test test/e2e",
+    "coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "pxt-microbit": "^9.1.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}
