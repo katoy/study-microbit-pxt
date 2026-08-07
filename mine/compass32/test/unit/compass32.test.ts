@@ -37,8 +37,13 @@ describe('compass32 Unit Tests (100% Coverage)', () => {
 
     it('returns correct point arrays for all 32 directions', () => {
         for (let i = 0; i < 32; i++) {
-            expect(getDirectionPoints(i * 11.25)).toEqual(DIRECTION_POINTS[i]);
-            expect(DIRECTION_POINTS[i].length).toBe(5);
+            const points = getDirectionPoints(i * 11.25);
+            const expectedPacked = DIRECTION_POINTS[i];
+            expect(points.length).toBe(5);
+            for (let j = 0; j < 5; j++) {
+                expect(points[j].x).toBe(Math.floor(expectedPacked[j] / 10));
+                expect(points[j].y).toBe(expectedPacked[j] % 10);
+            }
         }
     });
 });
