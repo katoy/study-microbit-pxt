@@ -32,45 +32,51 @@ micro:bit で動く 8 方向方位磁石（コンパス）アプリケーショ�
 
 ## <a id="specification"></a>🧭 仕様・8方向判定ロジック
 
-`input.compassHeading()` で取得した角度（`0` 〜 `359`）から、以下の 8 方向の矢印を出力します。
+micro:bit本体がどの方向を向いていても、**常に「北（真の北）」を指し示すコンパス**として動作するように、取得した角度（`0` 〜 `359`）から逆回転の矢印を出力します。
 
-| 角度範囲 (deg) | 方角 | 表示矢印アイコン (`ArrowNames`) |
-|---|---|---|
-| `338` <= deg < `23` (338°〜22°) | 北 (North) | `ArrowNames.North` |
-| `23` <= deg < `68` (23°〜67°) | 北東 (NorthEast) | `ArrowNames.NorthEast` |
-| `68` <= deg < `113` (68°〜112°) | 東 (East) | `ArrowNames.East` |
-| `113` <= deg < `158` (113°〜157°) | 南東 (SouthEast) | `ArrowNames.SouthEast` |
-| `158` <= deg < `203` (158°〜202°) | 南 (South) | `ArrowNames.South` |
-| `203` <= deg < `248` (203°〜247°) | 南西 (SouthWest) | `ArrowNames.SouthWest` |
-| `248` <= deg < `293` (248°〜292°) | 西 (West) | `ArrowNames.West` |
-| `293` <= deg < `338` (293°〜337°) | 北西 (NorthWest) | `ArrowNames.NorthWest` |
+| micro:bit本体の角度範囲 (deg) | 本体が向いている方角 | 表示矢印アイコン (`ArrowNames`) | 説明（北を指すための方向） |
+|---|---|---|---|
+| `338` <= deg < `23` (338°〜22°) | 北 (North) | `ArrowNames.North` | 北は正面 -> 上向きの矢印 |
+| `23` <= deg < `68` (23°〜67°) | 北東 (NorthEast) | `ArrowNames.NorthWest` | 北は左斜め前 -> 左上の矢印 |
+| `68` <= deg < `113` (68°〜112°) | 東 (East) | `ArrowNames.West` | 北は左 -> 左向きの矢印 |
+| `113` <= deg < `158` (113°〜157°) | 南東 (SouthEast) | `ArrowNames.SouthWest` | 北は左斜め後ろ -> 左下の矢印 |
+| `158` <= deg < `203` (158°〜202°) | 南 (South) | `ArrowNames.South` | 北は真後ろ -> 下向きの矢印 |
+| `203` <= deg < `248` (203°〜247°) | 南西 (SouthWest) | `ArrowNames.SouthEast` | 北は右斜め後ろ -> 右下の矢印 |
+| `248` <= deg < `293` (248°〜292°) | 西 (West) | `ArrowNames.East` | 北は右 -> 右向き of 矢印 |
+| `293` <= deg < `338` (293°〜337°) | 北西 (NorthWest) | `ArrowNames.NorthEast` | 北は右斜め前 -> 右上の矢印 |
 
-### 🛠️ 判定アルゴリズム (配列による簡素化)
+また、不正な角度値（負の角度や 360° 以上の角度）が入力された場合でも、自動的に `[0, 360)` の範囲に正規化されます。
 
-従来のネストされた大量の `if-else` 分岐から、境界値と方位を定義した配列を並行してループ探索するシンプルなアルゴリズムへリファクタリングされました。これにより、コードの保守性と拡張性が向上しています。
+### 🛠️ 判定アルゴリズム (配列による簡素化と正規化)
+
+境界値と方位を定義した配列をループ探索するアルゴリズムを使用しています。
 
 ```typescript
 const BOUNDS = [23, 68, 113, 158, 203, 248, 293];
+// 常に北を指すように、本体の向き（degrees）とは逆の方向の矢印を割り当てる
 const DIRECTIONS = [
-    ArrowNames.North,
-    ArrowNames.NorthEast,
-    ArrowNames.East,
-    ArrowNames.SouthEast,
-    ArrowNames.South,
-    ArrowNames.SouthWest,
-    ArrowNames.West
+    ArrowNames.North,      // < 23 (北): 北は正面 -> North
+    ArrowNames.NorthWest,  // < 68 (北東): 北は左前 -> NorthWest
+    ArrowNames.West,       // < 113 (東): 北は左 -> West
+    ArrowNames.SouthWest,  // < 158 (南東): 北は左後ろ -> SouthWest
+    ArrowNames.South,      // < 203 (南): 北は真後ろ -> South
+    ArrowNames.SouthEast,  // < 248 (南西): 北は右後ろ -> SouthEast
+    ArrowNames.East        // < 293 (西): 北は右 -> East
 ];
 
 export function getDirection(degrees: number): ArrowNames {
-    if (degrees >= 338) {
-        return ArrowNames.North;
+    // 角度を [0, 360) の範囲に正規化（負の角度や 360度以上の値にも対応）
+    const normalized = ((degrees % 360) + 360) % 360;
+
+    if (normalized >= 338) {
+        return ArrowNames.North; // >= 338 (北): 北は正面 -> North
     }
     for (let i = 0; i < BOUNDS.length; i++) {
-        if (degrees < BOUNDS[i]) {
+        if (normalized < BOUNDS[i]) {
             return DIRECTIONS[i];
         }
     }
-    return ArrowNames.NorthWest;
+    return ArrowNames.NorthEast; // >= 293 && < 338 (北西): 北は右前 -> NorthEast
 }
 ```
 
@@ -80,15 +86,15 @@ export function getDirection(degrees: number): ArrowNames {
 
 micro:bit の LED マトリクスに表示される 8 方向の矢印アイコンパターン一覧です。
 
-| 北 (0°) | 北東 (45°) | 東 (90°) | 南東 (135°) |
+| 北向きの時 (正面 0°) | 北東向きの時 (左前 45°) | 東向きの時 (左 90°) | 南東向きの時 (左後ろ 135°) |
 |:---:|:---:|:---:|:---:|
-| ![North](screenshots/00_north_0deg.png) | ![NorthEast](screenshots/01_northeast_45deg.png) | ![East](screenshots/02_east_90deg.png) | ![SouthEast](screenshots/03_southeast_135deg.png) |
-| `ArrowNames.North` | `ArrowNames.NorthEast` | `ArrowNames.East` | `ArrowNames.SouthEast` |
+| ![North](screenshots/00_north_0deg.png) | ![NorthWest](screenshots/01_northeast_45deg.png) | ![West](screenshots/02_east_90deg.png) | ![SouthWest](screenshots/03_southeast_135deg.png) |
+| `ArrowNames.North` | `ArrowNames.NorthWest` | `ArrowNames.West` | `ArrowNames.SouthWest` |
 
-| 南 (180°) | 南西 (225°) | 西 (270°) | 北西 (315°) |
+| 南向きの時 (真後ろ 180°) | 南西向きの時 (右後ろ 225°) | 西向きの時 (右 270°) | 北西向きの時 (右前 315°) |
 |:---:|:---:|:---:|:---:|
-| ![South](screenshots/04_south_180deg.png) | ![SouthWest](screenshots/05_southwest_225deg.png) | ![West](screenshots/06_west_270deg.png) | ![NorthWest](screenshots/07_northwest_315deg.png) |
-| `ArrowNames.South` | `ArrowNames.SouthWest` | `ArrowNames.West` | `ArrowNames.NorthWest` |
+| ![South](screenshots/04_south_180deg.png) | ![SouthEast](screenshots/05_southwest_225deg.png) | ![East](screenshots/06_west_270deg.png) | ![NorthEast](screenshots/07_northwest_315deg.png) |
+| `ArrowNames.South` | `ArrowNames.SouthEast` | `ArrowNames.East` | `ArrowNames.NorthEast` |
 
 ---
 
