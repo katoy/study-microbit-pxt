@@ -165,7 +165,7 @@ graph TD
 `npm test`, `npm run build`, `npm run serve` などのコマンド実行直前に、グローバル共有スキルである `microbit-pxt-sync` 内の同期スクリプトが全自動で起動します。
 * `src/` 内のファイルに変更がない通常時は、**数ミリ秒の高速判定** で通過します。
 * 変更が検知された場合のみ、`main.ts` が自動生成・マージされ、Playwright 経由で `main.blocks` および `built/binary.hex` が一括で最新化されます。
-* 競合定義 of 除外やエントリーポイントの指定は、プロジェクト直下の `sync-config.json` で制御されています。
+* 競合定義の除外やエントリーポイントの指定は、プロジェクト直下の `sync-config.json` で制御されています。
 
 ### 5. スクリーンショットおよびデモ GIF の生成
 

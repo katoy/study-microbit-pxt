@@ -226,9 +226,9 @@ TypeScript版には、3種類のテスト環境（PXT標準テスト、Playwrigh
   cd compass        # または compass-array, compass32
   npm run test:e2e
   ```
-- **コード品質チェック (ESLint) (compass32 のみ)**
+- **コード品質チェック (ESLint) (compass-array / compass32 のみ)**
   ```bash
-  cd compass32
+  cd compass32      # または compass-array
   npm run lint
   ```
 - **代表方位パターンの画像・デモGIF自動生成 (compass / compass-array)**
