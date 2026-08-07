@@ -5,6 +5,7 @@
 ## 目次
 
 - [ディレクトリ構成](#ディレクトリ構成)
+- [開発ガイドライン (CLAUDE.md)](#開発ガイドライン-claudemd)
 - [事前準備](#事前準備)
 - [開発手順](#開発手順)
   - [1. ローカル開発サーバーの起動（ブロックエディタ同期）](#1-ローカル開発サーバーの起動ブロックエディタ同期)
@@ -56,19 +57,28 @@ mine/
 ├── compass/                    <-- 8方向方位磁石アプリケーション (TypeScript / PXT)
 │   ├── main.ts                <-- メインプログラムコード
 │   ├── src/compass.ts         <-- 8方向判定ロジック
-│   └── README.md              <-- 方位磁石プロジェクトの詳細ドキュメント
+│   ├── README.md              <-- 方位磁石プロジェクトの詳細ドキュメント
+│   └── CLAUDE.md              <-- 開発ガイドライン（固有情報）
 ├── compass-array/             <-- 配列を用いた8方向方位磁石アプリケーション (Single Source of Truth 自動同期)
 │   ├── main.ts                <-- 自動生成メインプログラムコード
 │   ├── src/compass.ts         <-- 8方向判定ロジック関数 (配列による探索アルゴリズム)
-│   └── README.md              <-- プロジェクト個別の詳細ドキュメント
+│   ├── README.md              <-- プロジェクト個別の詳細ドキュメント
+│   └── CLAUDE.md              <-- 開発ガイドライン（固有情報）
 ├── compass-degit/             <-- 方位磁石そろばん表示アプリケーション (時計回り/反時計回りのずれ角度をそろばん形式で表示、SSOT自動同期)
 │   ├── main.ts                <-- 自動生成メインプログラムコード
 │   ├── src/compass.ts         <-- そろばん変換・符号計算ロジック
-│   └── README.md              <-- プロジェクト個別の詳細ドキュメント
+│   ├── README.md              <-- プロジェクト個別の詳細ドキュメント
+│   └── CLAUDE.md              <-- 開発ガイドライン（固有情報）
+├── compass16/                  <-- 16方向方位磁石アプリケーション (ハイブリッド矢印、Single Source of Truth 自動同期)
+│   ├── main.ts                <-- 自動生成メインプログラムコード
+│   ├── src/compass.ts         <-- 16方向判定ロジック & カスタム矢印パターン
+│   ├── README.md              <-- 16方向方位磁石の詳細ドキュメント
+│   └── CLAUDE.md              <-- 開発ガイドライン（固有情報）
 ├── compass32/                  <-- 32方向高精度方位磁石アプリケーション (Single Source of Truth 自動同期)
 │   ├── main.ts                <-- 自動生成メインプログラムコード
 │   ├── src/compass32.ts       <-- 32方向判定ロジック & 描画データ (Single Source of Truth)
-│   └── README.md              <-- 32方向方位磁石の詳細ドキュメント
+│   ├── README.md              <-- 32方向方位磁石の詳細ドキュメント
+│   └── CLAUDE.md              <-- 開発ガイドライン（固有情報）
 ├── invader/                   <-- Shake & Shoot インベーダーゲームサンプル
 │   ├── main.js                <-- JavaScript 単体テスト・シミュレート用コード
 │   ├── main_makecode.js       <-- MakeCode JavaScript 用コード (MakeCode エディタ互換)
@@ -91,8 +101,38 @@ mine/
 │   └── README.md              <-- スキル管理の案内ドキュメント
 ├── clean.sh                   <-- プロジェクト全体を初期化するためのクリーンアップスクリプト
 ├── memo.txt                   <-- 開発メモ・参考リンク集
+├── CLAUDE.md                  <-- プロジェクト全体の開発ガイドライン（ビルド・テスト・ツール設定、コーディング規約）
 └── README.md                  <-- リポジトリ全体の案内ドキュメント（本ファイル）
 ```
+
+---
+
+## 開発ガイドライン (CLAUDE.md)
+
+本プロジェクトでは、プロジェクト全体と各サブプロジェクトの開発ガイドラインを `CLAUDE.md` ファイルで管理しています。
+
+### ファイル一覧
+
+| ファイル | 説明 |
+|---------|------|
+| [`./CLAUDE.md`](CLAUDE.md) | **プロジェクト全体** - TypeScript ビルド・テスト手順、ツール設定（ESLint）、コーディング規約、SSOT パターン解説 |
+| [`compass/CLAUDE.md`](compass/CLAUDE.md) | **compass** - 8方向方位磁石（基本版）の仕様とロジック構成 |
+| [`compass-array/CLAUDE.md`](compass-array/CLAUDE.md) | **compass-array** - 配列ベースの8方向判定ロジック |
+| [`compass-degit/CLAUDE.md`](compass-degit/CLAUDE.md) | **compass-degit** - そろばん形式表示の仕様と LED マトリクス配置 |
+| [`compass16/CLAUDE.md`](compass16/CLAUDE.md) | **compass16** - 16方向矢印（ハイブリッド構成）の仕様 |
+| [`compass32/CLAUDE.md`](compass32/CLAUDE.md) | **compass32** - 32方向高精度（輝度グラデーション）の仕様と座標パック |
+
+### 使用方法
+
+- **プロジェクト全体のコーディング規約を確認**: [`./CLAUDE.md`](CLAUDE.md) を参照
+- **特定プロジェクトの仕様・ロジック・開発上の注意**: 各プロジェクトの `CLAUDE.md` を参照
+  
+  ```bash
+  # 例：compass プロジェクトの開発ガイドを確認
+  cat compass/CLAUDE.md
+  ```
+
+---
 
 ## 事前準備
 
