@@ -20,7 +20,7 @@ async function getLedStates(simFrame) {
 test('MakeCode micro:bit Simulator E2E Test for Invader', async ({ page }) => {
     test.setTimeout(90000);
 
-    const jsCodePath = path.resolve(__dirname, '../main_makecode.js');
+    const jsCodePath = path.resolve(__dirname, '../main_makecode.ts');
     const jsCode = fs.readFileSync(jsCodePath, 'utf8');
 
     console.log('[1/7] Navigating to MakeCode micro:bit editor...');
@@ -114,12 +114,23 @@ test('MakeCode micro:bit Simulator E2E Test for Invader', async ({ page }) => {
         await page.waitForTimeout(2000);
     }
 
+    console.log('[7/7] Capturing MakeCode simulator screenshots...');
+    const screenshotsDir = path.resolve(__dirname, '../screenshots');
+    if (!fs.existsSync(screenshotsDir)) {
+        fs.mkdirSync(screenshotsDir, { recursive: true });
+    }
+
+    // Capture startup screens
+    await page.screenshot({ path: path.join(screenshotsDir, '01_editor_startup.png') });
+    await iframeElement.screenshot({ path: path.join(screenshotsDir, '02_sim_startup.png') });
+
     // Test Button A press (move left)
     const btnA = simFrame.locator('g[aria-label="A"]').or(simFrame.locator('button#press-a')).first();
     if (await btnA.isVisible().catch(() => false)) {
         console.log(' - Pressing Button A...');
         await btnA.click({ force: true });
-        await page.waitForTimeout(1000);
+        await page.waitForTimeout(1500); // Wait for action
+        await iframeElement.screenshot({ path: path.join(screenshotsDir, '03_sim_left.png') });
     }
 
     // Test Button B press (move right)
@@ -127,7 +138,8 @@ test('MakeCode micro:bit Simulator E2E Test for Invader', async ({ page }) => {
     if (await btnB.isVisible().catch(() => false)) {
         console.log(' - Pressing Button B...');
         await btnB.click({ force: true });
-        await page.waitForTimeout(1000);
+        await page.waitForTimeout(1500);
+        await iframeElement.screenshot({ path: path.join(screenshotsDir, '04_sim_right.png') });
     }
 
     // Test Shake gesture (reload ammo)
@@ -135,15 +147,26 @@ test('MakeCode micro:bit Simulator E2E Test for Invader', async ({ page }) => {
     if (await shakeBtn.isVisible().catch(() => false)) {
         console.log(' - Triggering Shake gesture...');
         await shakeBtn.click({ force: true });
-        await page.waitForTimeout(2000);
+        await page.waitForTimeout(2500);
+        await iframeElement.screenshot({ path: path.join(screenshotsDir, '05_sim_shake.png') });
     }
 
-    console.log('[7/7] Capturing MakeCode simulator screenshot...');
+    // Capture standard final screenshot
     const outputDir = path.resolve(__dirname, '../built');
     if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir, { recursive: true });
     }
     const screenshotPath = path.join(outputDir, 'invader-simulator.png');
     await page.screenshot({ path: screenshotPath });
-    console.log(`E2E Simulator test passed! Screenshot saved to: ${screenshotPath}`);
+    console.log(`E2E Simulator test passed! Screenshots saved in: ${screenshotsDir}`);
+
+    // Handle recording video copy
+    const video = page.video();
+    if (video) {
+        await page.context().close();
+        const videoPath = await video.path();
+        const destVideoPath = path.join(screenshotsDir, 'demo.webm');
+        fs.copyFileSync(videoPath, destVideoPath);
+        console.log(`Video saved to: ${destVideoPath}`);
+    }
 });

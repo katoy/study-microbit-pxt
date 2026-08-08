@@ -13,6 +13,7 @@ module.exports = defineConfig({
     viewport: { width: 1280, height: 800 },
     actionTimeout: 15000,
     trace: 'on-first-retry',
+    video: 'on',
   },
   projects: [
     {

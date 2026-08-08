@@ -42,3 +42,7 @@ blob-report/
 coverage/
 .nyc_output/
 screenshots/
+
+# Allow tracking screenshots in hello-microbit and invader
+!hello-microbit/screenshots/
+!invader/screenshots/

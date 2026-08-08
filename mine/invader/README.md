@@ -2,6 +2,26 @@
 
 micro:bit の 5x5 LED マトリクス、A/Bボタン、および Shake（振る）センサーを活用したシューティングゲームサンプルです。
 
+## <a id="demo"></a>🎬 デモ動画・スクリーンショット
+
+### デモ動画 (シミュレータ動作確認テスト)
+
+E2Eテストで動作確認を行っている様子（WebM形式）です。
+
+<video src="screenshots/demo.webm" width="640" controls muted autoplay loop></video>
+
+### 主なスクリーンショット (シミュレータの表示状態)
+
+| 起動時 (エディタ全体) | 起動時 (シミュレータのみ) |
+| :---: | :---: |
+| ![起動時](screenshots/01_editor_startup.png) | ![シミュレータ起動時](screenshots/02_sim_startup.png) |
+
+| Aボタン (左移動) | Bボタン (右移動) | Shake (リロード) |
+| :---: | :---: | :---: |
+| ![左移動](screenshots/03_sim_left.png) | ![右移動](screenshots/04_sim_right.png) | ![リロード](screenshots/05_sim_shake.png) |
+
+---
+
 ## ゲームのルール
 
 1. **画面構成**:
