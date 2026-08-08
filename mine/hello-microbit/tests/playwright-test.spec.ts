@@ -199,20 +199,30 @@ test('MakeCode micro:bit simulator test', async ({ page }) => {
   const simFrame = page.frameLocator(iframeSelector);
 
   // --- テストシナリオ実行 ---
+  const screenshotsDir = path.resolve(__dirname, '../screenshots');
+  if (!fs.existsSync(screenshotsDir)) {
+    fs.mkdirSync(screenshotsDir, { recursive: true });
+  }
 
   // シナリオ 1: 起動時の表示 (ハート)
   console.log('Scenario 1: Verifying startup heart icon...');
   await expectLedPattern(simFrame, HEART_LEDS);
+  await page.screenshot({ path: path.join(screenshotsDir, '01_editor_startup.png') });
+  await iframeElement.screenshot({ path: path.join(screenshotsDir, '01_sim_heart.png') });
 
   // シナリオ 2: Aボタン押下時の表示 (笑顔)
   console.log('Scenario 2: Pressing Button A for happy icon...');
   await clickWithVisualHelper(page, simFrame.locator('g[aria-label="A"]').first());
   await expectLedPattern(simFrame, HAPPY_LEDS);
+  await page.screenshot({ path: path.join(screenshotsDir, '02_editor_happy.png') });
+  await iframeElement.screenshot({ path: path.join(screenshotsDir, '02_sim_happy.png') });
 
   // シナリオ 3: Bボタン押下時の表示 (悲しい顔)
   console.log('Scenario 3: Pressing Button B for sad icon...');
   await clickWithVisualHelper(page, simFrame.locator('g[aria-label="B"]').first());
   await expectLedPattern(simFrame, SAD_LEDS);
+  await page.screenshot({ path: path.join(screenshotsDir, '03_editor_sad.png') });
+  await iframeElement.screenshot({ path: path.join(screenshotsDir, '03_sim_sad.png') });
 
   // シナリオ 4: A+Bボタン押下時の表示 ("Hello!" スクロール -> ハートに戻る)
   console.log('Scenario 4: Pressing Button A+B for Hello! text...');
@@ -222,8 +232,10 @@ test('MakeCode micro:bit simulator test', async ({ page }) => {
   // スクロールにかかる時間を考慮し、タイムアウトを長めに設定 (15秒)
   console.log('Waiting for "Hello!" scroll to complete and return to heart...');
   await expectLedPattern(simFrame, HEART_LEDS, 15000);
+  await page.screenshot({ path: path.join(screenshotsDir, '04_editor_hello_scroll_end.png' ) });
+  await iframeElement.screenshot({ path: path.join(screenshotsDir, '04_sim_heart_returned.png') });
 
-  // シナリオ 5: Shake時の表示 (1〜6の数字表示 -> 1秒後に消去)
+  // シナリオ 5: Shake時の表示 (1〜6 of ランダム数値表示 -> 1秒後に消去)
   console.log('Scenario 5: Simulating Shake gesture...');
   await clickWithVisualHelper(page, simFrame.locator('.sim-shake, [aria-label="Shake"]').first());
   
@@ -238,9 +250,14 @@ test('MakeCode micro:bit simulator test', async ({ page }) => {
     timeout: 5000,
   }).toBe(true);
 
+  await page.screenshot({ path: path.join(screenshotsDir, '05_editor_shake_dice.png') });
+  await iframeElement.screenshot({ path: path.join(screenshotsDir, '05_sim_shake_dice.png') });
+
   // 1秒間の表示時間のあと、basic.clearScreen() が走り、全消灯する
   console.log('Waiting for dice display to clear...');
   await expectLedPattern(simFrame, [], 5000); // 空配列 = 全消灯
+  await page.screenshot({ path: path.join(screenshotsDir, '06_editor_clear.png') });
+  await iframeElement.screenshot({ path: path.join(screenshotsDir, '06_sim_clear.png') });
 
   console.log('All E2E scenarios passed successfully!');
 });

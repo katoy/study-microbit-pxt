@@ -6,6 +6,7 @@ MakeCode micro:bit (PXT) の TypeScript プロジェクトです。ボタン操�
 
 ## 📋 目次 (TOC)
 
+- [🎬 デモ動画・スクリーンショット](#demo)
 - [🧭 仕様・動作イベント一覧](#specification)
 - [📁 ディレクトリ構成](#directory-structure)
 - [🛠️ 開発・ビルド手順](#development-and-build)
@@ -19,6 +20,38 @@ MakeCode micro:bit (PXT) の TypeScript プロジェクトです。ボタン操�
   - [2. 個別テストの実行](#2-個別テストの実行)
 - [📊 カバレッジ計測結果表示方法](#coverage)
 - [🤖 AI Agent スキルの活用プロンプト例](#ai-agent-prompts)
+
+---
+
+## <a id="demo"></a>🎬 デモ動画・スクリーンショット
+
+### デモ動画 (シミュレータ動作確認テスト)
+
+E2Eテストで動作確認を行っている様子（WebM形式）です。
+
+<video src="screenshots/demo.webm" width="640" controls muted autoplay loop></video>
+
+### 主なスクリーンショット (シミュレータの表示状態)
+
+| 起動時 (ハート) | Aボタン (笑顔) | Bボタン (悲しい顔) |
+| :---: | :---: | :---: |
+| ![起動時](screenshots/01_sim_heart.png) | ![Aボタン笑顔](screenshots/02_sim_happy.png) | ![Bボタン悲しい顔](screenshots/03_sim_sad.png) |
+
+| A+Bボタン (スクロール終了) | ゆさぶられたとき (サイコロ) | 画面消去後 |
+| :---: | :---: | :---: |
+| ![A+Bスクロール](screenshots/04_sim_heart_returned.png) | ![サイコロ](screenshots/05_sim_shake_dice.png) | ![消灯](screenshots/06_sim_clear.png) |
+
+### エディタ開発画面
+
+MakeCode エディタに `.hex` ファイルを読み込ませた直後の画面レイアウトです。
+
+![MakeCodeエディタ画面](screenshots/01_editor_startup.png)
+
+### Python インポートのデモ
+
+Python ファイルを MakeCode 内にロードした際の自動コンパイルとテスト動画です。
+
+<video src="screenshots/import_python_demo.webm" width="640" controls muted></video>
 
 ---
 
@@ -45,6 +78,7 @@ hello-microbit/
 ├── pxt.json             <-- PXT プロジェクト設定ファイル
 ├── package.json         <-- npm パッケージ・スクリプト定義
 ├── test.sh              <-- テスト一括実行シェルスクリプト
+├── screenshots/         <-- デモ動画・スクリーンショット格納フォルダ
 ├── tests/
 │   ├── test.ts              <-- PXT 標準テスト
 │   ├── coverage.test.ts      <-- Jest 単体テスト (カバレッジ計測用)
